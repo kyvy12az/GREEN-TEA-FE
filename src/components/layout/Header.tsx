@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingBag, Search, Leaf, Home, Wind, Users, Phone, User, LogOut, PenSquare, FileText, Library, Package } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
@@ -69,6 +69,18 @@ export const Header = () => {
     setIsMenuOpen(false);
   }, [location]);
 
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -86,7 +98,7 @@ export const Header = () => {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-        ? 'bg-card/95 backdrop-blur-md shadow-md'
+        ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-md' // Đổi bg-card thành màu cụ thể để an toàn
         : 'bg-transparent'
         }`}
     >
@@ -164,15 +176,6 @@ export const Header = () => {
 
           {/* Right Actions */}
           <div className="flex items-center gap-2 md:gap-3">
-            {/* Search */}
-            {/* <button
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="p-2 rounded-full hover:bg-accent transition-colors"
-              aria-label="Tìm kiếm"
-            >
-              <Search className="w-5 h-5" />
-            </button> */}
-
             {/* Cart */}
             <Link
               to="/cart"
@@ -191,7 +194,7 @@ export const Header = () => {
             {isAuthenticated && user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-accent transition-colors">
+                  <button className="hidden md:flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-accent transition-colors">
                     {user.avatar ? (
                       <img
                         src={user.avatar}
@@ -205,7 +208,7 @@ export const Header = () => {
                         </span>
                       </div>
                     )}
-                    <span className="hidden md:block text-sm font-medium text-foreground max-w-[100px] truncate">
+                    <span className="text-sm font-medium text-foreground max-w-[100px] truncate">
                       {user.name}
                     </span>
                   </button>
@@ -259,125 +262,142 @@ export const Header = () => {
                   <User className="w-4 h-4" />
                   Đăng nhập
                 </Link>
-
-                {/* Login - Mobile */}
-                <Link
-                  to="/login"
-                  className="md:hidden p-2 rounded-full hover:bg-accent transition-colors"
-                  aria-label="Đăng nhập"
-                >
-                  <User className="w-5 h-5" />
-                </Link>
               </>
             )}
 
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-full hover:bg-accent transition-colors md:hidden"
+              className="p-2 rounded-full hover:bg-accent transition-colors md:hidden relative z-[101]" // Tăng z-index để nút luôn nổi trên menu
               aria-label="Menu"
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
-
-        {/* Search Bar */}
-        {/* {isSearchOpen && (
-          <div className="absolute top-full left-0 right-0 bg-card shadow-lg p-4 animate-slide-up">
-            <div className="container mx-auto">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm sản phẩm..."
-                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                  autoFocus
-                />
-              </div>
-            </div>
-          </div>
-        )} */}
       </div>
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            variants={screenVariants}
-            initial="closed"
-            animate="opened"
-            exit="closed"
-            className="fixed inset-0 bg-white z-[100] flex flex-col md:hidden"
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="md:hidden fixed inset-0 bg-white dark:bg-slate-950 z-[100] h-screen w-screen"
+            style={{ position: 'fixed', top: 0, left: 0 }}
           >
-            {/* TOP BAR - Chứa nút đóng */}
-            <div className="flex items-center justify-between px-8 py-6 border-b border-neutral-100">
-              <div className="flex items-center gap-2">
-                <Leaf className="w-5 h-5 text-emerald-600" />
-                <span className="font-serif italic text-emerald-950 tracking-widest font-bold">TRÀ XANH</span>
-              </div>
-              <button
-                onClick={() => setIsMenuOpen(false)}
-                className="p-3 rounded-full bg-neutral-50 text-neutral-900 transition-transform active:scale-90"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            {/* LIST ITEMS - Căn giữa màn hình */}
-            <nav className="flex-1 flex flex-col justify-center px-10 gap-1">
-              {navLinks.map((link) => {
-                const isActive = location.pathname === link.path;
-                return (
-                  <motion.div key={link.path} variants={itemVariants}>
+            <div className="flex flex-col h-full pt-20 px-6 pb-10 overflow-y-auto">
+              {/* Navigation */}
+              <nav className="flex flex-col space-y-2">
+                {navLinks.map((link) => {
+                  const isActive = location.pathname === link.path;
+                  return (
                     <Link
+                      key={link.path}
                       to={link.path}
+                      className={`flex items-center py-4 px-5 rounded-2xl text-lg font-semibold transition-all ${isActive
+                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10'
+                        : 'text-gray-800 dark:text-gray-200 hover:bg-gray-100'
+                        }`}
                       onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center justify-between py-5 border-b border-neutral-50 group"
                     >
-                      <div className="flex items-center gap-4">
-                        {/* Icon được thu nhỏ lại và tinh tế */}
-                        <span className={`transition-colors duration-300 ${isActive ? 'text-emerald-600' : 'text-neutral-400 group-hover:text-emerald-600'}`}>
-                          {link.icon}
-                        </span>
-                        <span
-                          className={`text-xl font-serif tracking-wide transition-all duration-300 ${isActive ? 'text-emerald-950 font-bold' : 'text-neutral-500 group-hover:text-emerald-950'
-                            }`}
-                        >
-                          {link.name}
-                        </span>
-                      </div>
-
-                      {isActive && (
-                        <motion.div
-                          layoutId="activeCircle"
-                          className="w-1.5 h-1.5 rounded-full bg-emerald-600"
-                        />
-                      )}
+                      <span className="mr-4">{link.icon}</span>
+                      {link.name}
                     </Link>
-                  </motion.div>
-                );
-              })}
-            </nav>
+                  );
+                })}
+              </nav>
 
-            {/* BOTTOM INFO */}
-            <motion.div
-              variants={itemVariants}
-              className="p-10 bg-neutral-50 flex flex-col gap-6"
-            >
-              <div className="space-y-2">
-                <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold">Liên hệ với chúng tôi</p>
-                <p className="text-emerald-950 font-serif italic text-sm">hotline@traxanhviet.com</p>
-              </div>
+              {/* User Section */}
+              <div className="pt-6 mt-auto border-t border-gray-200">
+                {isAuthenticated && user ? (
+                  <div className="space-y-4">
+                    <Link
+                      to="/profile"
+                      className="flex items-center p-4 bg-gray-50 rounded-xl"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {user.avatar ? (
+                        <div className="relative mr-4 overflow-hidden border-2 border-white rounded-full shadow-sm w-14 h-14">
+                          <img
+                            src={user.avatar}
+                            alt={user.name}
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                      ) : (
+                        <div className="relative mr-4 w-14 h-14 rounded-full bg-primary flex items-center justify-center border-2 border-white shadow-sm">
+                          <span className="text-lg font-bold text-primary-foreground">
+                            {getInitials(user.name)}
+                          </span>
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-semibold text-gray-900">{user.name}</p>
+                        <p className="text-sm text-gray-500">{user.email}</p>
+                      </div>
+                    </Link>
 
-              <div className="flex gap-6">
-                {['Facebook', 'Instagram', 'Zalo'].map((social) => (
-                  <span key={social} className="text-xs font-bold text-neutral-400 hover:text-emerald-600 transition-colors cursor-pointer">
-                    {social}
-                  </span>
-                ))}
+                    <div className="space-y-1">
+                      <Link
+                        to="/orders"
+                        className="flex items-center py-2.5 px-4 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-primary"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <Package className="mr-3 w-5 h-5" />
+                        Đơn hàng của tôi
+                      </Link>
+                      <Link
+                        to="/my-posts"
+                        className="flex items-center py-2.5 px-4 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-primary"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <FileText className="mr-3 w-5 h-5" />
+                        Bài viết của tôi
+                      </Link>
+                      <Link
+                        to="/create-post"
+                        className="flex items-center py-2.5 px-4 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-primary"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <PenSquare className="mr-3 w-5 h-5" />
+                        Viết bài mới
+                      </Link>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full flex items-center justify-center py-3 px-4 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 mt-4"
+                    >
+                      <LogOut className="mr-2 w-5 h-5" />
+                      Đăng xuất
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col space-y-3">
+                    <Link
+                      to="/login"
+                      className="flex items-center justify-center w-full px-4 py-3 font-medium text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Đăng nhập
+                    </Link>
+                    <Link
+                      to="/register"
+                      className="w-full flex items-center justify-center py-3 px-4 rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Đăng ký
+                    </Link>
+                  </div>
+                )}
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

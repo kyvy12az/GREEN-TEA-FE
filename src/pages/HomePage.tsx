@@ -173,7 +173,7 @@ const teaValues = [
 
 const HomePage = () => {
   const { data: allProducts = [], isLoading: isLoadingProducts } = useProducts({ category: 'all' });
-  const featuredProducts = allProducts.filter(p => p.featured).slice(0, 4);
+  const featuredProducts = allProducts.filter(p => p.id).slice(1, 5);
 
   const COLORS = ["#4ade80", "#d1fae5"];
 
@@ -201,9 +201,9 @@ const HomePage = () => {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <motion.div
-          initial={{ scale: 1.2, opacity: 0 }}
+          initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 2.5, ease: "easeOut" }}
+          transition={{ duration: 1.5, ease: [0.25, 0.1, 0.25, 1] }}
           className="absolute inset-0"
         >
           <img
@@ -215,23 +215,24 @@ const HomePage = () => {
         </motion.div>
 
         {/* Content */}
-        <motion.div
-          className="container mx-auto px-4 relative z-10 pt-20"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
+        <div className="container mx-auto px-4 relative z-10 pt-20">
           <div className="max-w-2xl">
-            <motion.div variants={itemVariants}>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 backdrop-blur-sm text-primary-foreground text-sm font-medium mb-6 animate-fade-in">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 backdrop-blur-sm text-primary-foreground text-sm font-medium mb-6">
                 <Leaf className="w-4 h-4" />
                 100% Nguyên Chất Từ Thiên Nhiên
               </span>
             </motion.div>
 
             <motion.h1
-              variants={itemVariants}
-              className="text-4xl md:text-5xl lg:text-6xl font-decoration italic text-primary-foreground leading-tight mb-6 animate-slide-up"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+              className="text-4xl md:text-5xl lg:text-6xl font-decoration italic text-primary-foreground leading-tight mb-6"
             >
               Khám Phá Hương Vị{' '}
               <span className="text-tea-300">Tinh Túy</span>{' '}
@@ -239,19 +240,27 @@ const HomePage = () => {
             </motion.h1>
 
             <motion.p
-              variants={itemVariants}
-              className="text-sm md:text-lg text-tea-100 italic leading-relaxed mb-8 animate-slide-up"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+              className="text-sm md:text-lg text-tea-100 italic leading-relaxed mb-8"
             >
               Mang đến cho bạn những sản phẩm trà xanh nguyên chất từ vùng cao Việt Nam
               và Nhật Bản, được chọn lọc kỹ lưỡng để đảm bảo chất lượng tốt nhất.
             </motion.p>
 
             <motion.div
-              variants={itemVariants}
-              className="flex flex-wrap gap-4 animate-slide-up"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
+              className="flex flex-wrap gap-4"
             >
               <Link to="/products">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <motion.div 
+                  whileHover={{ scale: 1.05 }} 
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
                   <CustomButton variant="hero" size="lg" className='bg-primary text-white hover:bg-primary/80'>
                     Khám Phá Ngay
                     <ArrowRight className="w-5 h-5" />
@@ -261,142 +270,137 @@ const HomePage = () => {
               <AIRecommendationButton />
             </motion.div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 rounded-full border-2 border-primary-foreground/50 flex items-start justify-center pt-2">
-            <div className="w-1.5 h-3 bg-primary-foreground/50 rounded-full animate-pulse" />
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.5 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        >
+          <motion.div 
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-6 h-10 rounded-full border-2 border-primary-foreground/50 flex items-start justify-center pt-2"
+          >
+            <motion.div 
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              className="w-1.5 h-3 bg-primary-foreground/50 rounded-full"
+            />
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Features Strip*/}
+      <section className="bg-tea-900 border-y border-tea-800/50 py-8">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              { icon: Truck, title: "Miễn phí vận chuyển", desc: "Cho đơn hàng từ 500K" },
+              { icon: Award, title: "Chất lượng cao", desc: "Cam kết chính hãng 100%" },
+              { icon: Shield, title: "Bảo mật thanh toán", desc: "An toàn tuyệt đối" },
+              { icon: RotateCcw, title: "Đổi trả dễ dàng", desc: "Trong vòng 7 ngày" }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.1,
+                  ease: [0.25, 0.1, 0.25, 1] 
+                }}
+                whileHover={{ y: -5 }}
+                className="flex flex-col items-center md:flex-row gap-4 text-primary-foreground group cursor-pointer"
+              >
+                <motion.div
+                  className="p-3 rounded-full bg-white/5 group-hover:bg-primary/20 transition-colors duration-300"
+                  whileHover={{ 
+                    rotate: [0, -10, 10, 0],
+                    transition: { duration: 0.5 }
+                  }}
+                >
+                  <feature.icon className="w-6 h-6 text-tea-300" />
+                </motion.div>
+                <div className="text-center md:text-left">
+                  <p className="font-bold text-sm uppercase tracking-wider">{feature.title}</p>
+                  <p className="text-tea-200/70 text-xs">{feature.desc}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Features Strip*/}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={staggerContainer}
-        className="bg-tea-900 border-y border-tea-800/50 py-8"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div variants={staggerContainer} className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <motion.div
-              variants={fadeInUp}
-              whileHover={{ y: -5, transition: { duration: 0.3 } }}
-              className="flex flex-col items-center md:flex-row gap-4 text-primary-foreground group cursor-pointer"
-            >
-              <motion.div
-                className="p-3 rounded-full bg-white/5 group-hover:bg-primary/20 transition-colors"
-                whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
-              >
-                <Truck className="w-6 h-6 text-tea-300" />
-              </motion.div>
-              <div className="text-center md:text-left">
-                <p className="font-bold text-sm uppercase tracking-wider">Miễn phí vận chuyển</p>
-                <p className="text-tea-200/70 text-xs">Cho đơn hàng từ 500K</p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              variants={fadeInUp}
-              whileHover={{ y: -5, transition: { duration: 0.3 } }}
-              className="flex flex-col items-center md:flex-row gap-4 text-primary-foreground group cursor-pointer"
-            >
-              <motion.div
-                className="p-3 rounded-full bg-white/5 group-hover:bg-primary/20 transition-colors"
-                whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
-              >
-                <Award className="w-6 h-6 text-tea-300" />
-              </motion.div>
-              <div className="text-center md:text-left">
-                <p className="font-bold text-sm uppercase tracking-wider">Chất lượng cao</p>
-                <p className="text-tea-200/70 text-xs">Cam kết chính hãng 100%</p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              variants={fadeInUp}
-              whileHover={{ y: -5, transition: { duration: 0.3 } }}
-              className="flex flex-col items-center md:flex-row gap-4 text-primary-foreground group cursor-pointer"
-            >
-              <motion.div
-                className="p-3 rounded-full bg-white/5 group-hover:bg-primary/20 transition-colors"
-                whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
-              >
-                <Shield className="w-6 h-6 text-tea-300" />
-              </motion.div>
-              <div className="text-center md:text-left">
-                <p className="font-bold text-sm uppercase tracking-wider">Bảo mật thanh toán</p>
-                <p className="text-tea-200/70 text-xs">An toàn tuyệt đối</p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              variants={fadeInUp}
-              whileHover={{ y: -5, transition: { duration: 0.3 } }}
-              className="flex flex-col items-center md:flex-row gap-4 text-primary-foreground group cursor-pointer"
-            >
-              <motion.div
-                className="p-3 rounded-full bg-white/5 group-hover:bg-primary/20 transition-colors"
-                whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
-              >
-                <RotateCcw className="w-6 h-6 text-tea-300" />
-              </motion.div>
-              <div className="text-center md:text-left">
-                <p className="font-bold text-sm uppercase tracking-wider">Đổi trả dễ dàng</p>
-                <p className="text-tea-200/70 text-xs">Trong vòng 7 ngày</p>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </motion.section>
-
       {/* AI Modal */}
       <AIRecommendationModal />
 
-      {/* Benefits Section */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={containerVariants}
-        className="relative py-32 bg-tea-50/50 overflow-hidden"
-      >
+      {/* Benefits Section */}  
+      <section className="relative py-32 bg-tea-50/50 overflow-hidden">
 
-        {/* decor nền */}
+        {/* Animated Background Decorations */}
         <motion.div
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.2, 0.4, 0.2],
           }}
-          transition={{ duration: 8, repeat: Infinity }}
-          className="absolute top-0 left-0 w-80 h-80 bg-emerald-100/40 rounded-full blur-3xl -z-10"
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-0 left-0 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl"
         />
-
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-teal-500/10 rounded-full blur-[100px] -z-10" />
+        <motion.div
+          animate={{
+            scale: [1, 1.15, 1],
+            opacity: [0.15, 0.3, 0.15],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute bottom-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-[100px]"
+        />
 
         <div className="container mx-auto px-6 relative z-10">
 
-          {/* ===== HEADER CHUNG ===== */}
+          {/* Header */}
           <motion.div
-            variants={fadeInUp}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="text-center max-w-4xl mx-auto mb-24"
           >
-            <span className="block text-primary tracking-[0.35em] uppercase text-xs mb-4">
+            <motion.span
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="block text-primary tracking-[0.35em] uppercase text-xs mb-4 font-medium"
+            >
               Health · Ritual · Value
-            </span>
+            </motion.span>
 
-            <h2 className="text-4xl md:text-5xl font-decoration font-semibold text-tea-950 mb-6">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-decoration font-semibold text-tea-950 mb-6"
+            >
               Tinh Hoa{" "}
               <span className="italic text-primary">Trà Xanh</span>{" "}
               Được Tạo Nên
-            </h2>
+            </motion.h2>
 
-            <p className="text-tea-700/70 font-decoration text-lg leading-loose italic">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-tea-700/70 font-decoration text-lg md:text-xl leading-loose italic"
+            >
               Trà không chỉ là thức uống,
               mà là một nghi lễ nuôi dưỡng thân – tâm – trí.
-            </p>
+            </motion.p>
           </motion.div>
 
           {/* ===== 2 CỘT: ẢNH + BIỂU ĐỒ ===== */}
@@ -454,28 +458,32 @@ const HomePage = () => {
             </div>
           </div>
 
-          {/* ===== BENEFITS CARDS ===== */}
-          <motion.div
-            variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10"
-          >
+          {/* Benefits Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
             {benefits.map((benefit, index) => (
               <motion.div
                 key={index}
-                variants={fadeInUp}
-                whileHover={{ y: -15, transition: { duration: 0.3 } }}
-                className="bg-white p-10 rounded-[2.5rem]
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: index * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -12, scale: 1.02 }}
+                className="relative bg-white p-8 lg:p-10 rounded-[2.5rem]
                   shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)]
-                  hover:shadow-[0_25px_70px_-15px_rgba(0,0,0,0.12)]
-                  transition-all duration-500 group border border-tea-100/50"
+                  hover:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.15)]
+                  transition-all duration-500 group border border-tea-100/50
+                  cursor-pointer overflow-hidden"
               >
                 <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 ${benefit.bg}`} />
 
-                <div className={`w-16 h-16 rounded-2xl ${benefit.bg} flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg ${benefit.shadow}`}>
-                  <benefit.icon className={`w-8 h-8 ${benefit.color} group-hover:scale-110 transition-transform`} />
+                <div className={`relative w-16 h-16 rounded-2xl ${benefit.bg} flex items-center justify-center mb-8 
+                  group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 
+                  shadow-lg ${benefit.shadow}`}>
+                  <benefit.icon className={`w-8 h-8 ${benefit.color} group-hover:scale-110 transition-transform duration-300`} />
                 </div>
 
-                <h3 className="text-2xl font-semibold text-tea-950 mb-4 group-hover:text-primary transition-colors">
+                <h3 className="text-xl lg:text-2xl font-semibold text-tea-950 mb-4 
+                  group-hover:text-primary transition-colors duration-300">
                   {benefit.title}
                 </h3>
 
@@ -484,10 +492,9 @@ const HomePage = () => {
                 </p>
               </motion.div>
             ))}
-          </motion.div>
-
+          </div>
         </div>
-      </motion.section>
+      </section>
 
       <motion.section
         initial="hidden"
@@ -575,7 +582,7 @@ const HomePage = () => {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={fadeInUp}
-        className="py-24 md:py-32 bg-white relative overflow-hidden"
+        className="py-20 bg-white relative overflow-hidden"
       >
         {/* Decor nền nhẹ */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-tea-50 rounded-full blur-3xl -z-10 opacity-50" />
@@ -611,24 +618,52 @@ const HomePage = () => {
 
           </div>
 
-          {/* GRID SẢN PHẨM (KHÔNG ĐỤNG FONT CARD) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {featuredProducts.slice(0, 4).map((product) => (
-              <div key={product.id} className="group">
-                <ProductCard product={product} />
+          {/* GRID SẢN PHẨM */}
+          {isLoadingProducts ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+              {[...Array(4)].map((_, index) => (
+                <div key={index} className="animate-pulse">
+                  <div className="bg-tea-100 rounded-3xl h-80 mb-4"></div>
+                  <div className="h-4 bg-tea-100 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-tea-100 rounded w-1/2"></div>
+                </div>
+              ))}
+            </div>
+          ) : featuredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+              {featuredProducts.slice(0, 4).map((product) => (
+                <div key={product.id} className="group">
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-tea-100 mb-6">
+                <Leaf className="w-10 h-10 text-tea-400" />
               </div>
-            ))}
-          </div>
+              <h3 className="text-xl font-semibold text-tea-900 mb-2">Chưa có sản phẩm nổi bật</h3>
+              <p className="text-tea-600 mb-8">Vui lòng quay lại sau hoặc xem tất cả sản phẩm</p>
+              <Link to="/products">
+                <button className="inline-flex items-center gap-2 px-8 py-3 bg-primary text-white rounded-full hover:bg-primary/90 transition-all duration-300">
+                  Xem tất cả sản phẩm
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </Link>
+            </div>
+          )}
 
           {/* CTA */}
-          <div className="text-center mt-20">
-            <Link to="/products">
-              <button className="inline-flex items-center gap-3 px-12 py-4 bg-primary text-white rounded-full hover:bg-primary/500 transition-all duration-300 font-medium tracking-wider font-sans group">
-                XEM TẤT CẢ SẢN PHẨM
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-              </button>
-            </Link>
-          </div>
+          {!isLoadingProducts && featuredProducts.length > 0 && (
+            <div className="text-center mt-20">
+              <Link to="/products">
+                <button className="inline-flex items-center gap-3 px-12 py-4 bg-primary text-white rounded-full hover:bg-primary/500 transition-all duration-300 font-medium tracking-wider font-sans group">
+                  XEM TẤT CẢ SẢN PHẨM
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                </button>
+              </Link>
+            </div>
+          )}
 
         </div>
       </motion.section>
