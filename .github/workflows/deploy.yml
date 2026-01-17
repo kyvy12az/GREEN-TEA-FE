@@ -1,0 +1,40 @@
+name: 🚀 Deploy FE via FTP
+
+on:
+  push:
+    branches:
+      - main   # hoặc 'master' tùy nhánh bạn đang dùng
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧭 Checkout source
+        uses: actions/checkout@v3
+
+      - name: 🧩 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🏗️ Build project
+        run: npm run build
+
+      - name: 📂 Upload via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: dist/
+          server-dir: /
+          exclude: |
+            **/.git*
+            **/.github*
+            **/node_modules/**
