@@ -1,42 +1,34 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, Clock, User, Share2, Facebook, Twitter, LinkIcon, ChevronRight } from 'lucide-react';
-import { getBlogBySlug, blogPosts } from '@/data/blogs';
+import { ArrowLeft, Calendar, Clock, User, Share2, Facebook, Twitter, LinkIcon, ChevronRight, Tag, Loader2 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { getCategoryName } from '@/lib/categoryUtils';
 import { CustomButton } from '@/components/ui/custom-button';
-import { usePostStore } from '@/store/postStore';
-import { useMemo } from 'react';
+import { useBlogPost, useBlogPostsByCategory } from '@/hooks/useBlogPosts';
 
 const BlogDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { posts } = usePostStore();
   
-  // Tìm bài viết từ cả postStore (bài viết user tạo) và blogPosts (bài viết mẫu)
-  const blog = useMemo(() => {
-    // Tìm trong posts của user trước
-    const userPost = posts.find(p => p.slug === slug && p.status === 'published');
-    if (userPost) {
-      return {
-        id: userPost.id,
-        title: userPost.title,
-        slug: userPost.slug,
-        excerpt: userPost.excerpt,
-        content: userPost.content,
-        image: userPost.coverImage || 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800&auto=format&fit=crop',
-        author: userPost.authorName,
-        category: userPost.category,
-        date: userPost.createdAt,
-        readTime: Math.ceil(userPost.content.length / 1000), // Ước tính thời gian đọc
-        tags: userPost.tags,
-      };
-    }
-    // Nếu không tìm thấy thì tìm trong blog posts mẫu
-    return getBlogBySlug(slug || '');
-  }, [slug, posts]);
+  const { data: blog, isLoading } = useBlogPost(slug);
+  const { data: relatedPosts = [] } = useBlogPostsByCategory(blog?.category || null);
+
+  // Tính thời gian đọc từ content
+  const getReadTime = (content: string | null) => {
+    if (!content) return 5;
+    return Math.ceil(content.length / 1000);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background pt-20">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!blog) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-background pt-20">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Bài viết không tồn tại</h1>
           <Link to="/blog">
@@ -47,26 +39,8 @@ const BlogDetailPage = () => {
     );
   }
 
-  // Lấy bài viết liên quan từ cả 2 nguồn
-  const allPosts = useMemo(() => {
-    const userPublishedPosts = posts
-      .filter(p => p.status === 'published')
-      .map(p => ({
-        id: p.id,
-        title: p.title,
-        slug: p.slug,
-        excerpt: p.excerpt,
-        image: p.coverImage || 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800&auto=format&fit=crop',
-        category: p.category,
-        date: p.createdAt,
-        readTime: Math.ceil(p.content.length / 1000),
-      }));
-    return [...userPublishedPosts, ...blogPosts];
-  }, [posts]);
-
-  const relatedPosts = allPosts
-    .filter((post) => post.id !== blog.id && post.category === blog.category)
-    .slice(0, 3);
+  // Lọc bài viết liên quan (loại trừ bài hiện tại)
+  const filteredRelatedPosts = relatedPosts.filter(post => post.id !== blog.id).slice(0, 3);
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
@@ -91,7 +65,7 @@ const BlogDetailPage = () => {
       <section className="relative h-[50vh] md:h-[60vh] flex items-end">
         <div className="absolute inset-0">
           <img
-            src={blog.image}
+            src={blog.image || 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800&auto=format&fit=crop'}
             alt={blog.title}
             className="w-full h-full object-cover"
           />
@@ -108,9 +82,26 @@ const BlogDetailPage = () => {
             <span className="text-primary-foreground truncate max-w-[200px]">{blog.title}</span>
           </nav>
 
-          <span className="inline-block px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-medium mb-4">
-            {blog.category}
-          </span>
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            {blog.category && (
+              <span className="inline-block px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-medium">
+                {getCategoryName(blog.category)}
+              </span>
+            )}
+            {blog.tags && blog.tags.length > 0 && (
+              <div className="flex items-center gap-2">
+                {blog.tags.map((tag, index) => (
+                  <span 
+                    key={index}
+                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-tea-800/60 text-tea-100 text-xs backdrop-blur-sm"
+                  >
+                    <Tag className="w-3 h-3" />
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
           
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-decoration font-semibold text-primary-foreground leading-tight mb-6 max-w-4xl">
             {blog.title}
@@ -123,11 +114,11 @@ const BlogDetailPage = () => {
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
-              <span>{formatDate(blog.date)}</span>
+              <span>{formatDate(blog.publish_date || blog.created_at)}</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5" />
-              <span>{blog.readTime} phút đọc</span>
+              <span>{getReadTime(blog.content)} phút đọc</span>
             </div>
           </div>
         </div>
@@ -147,7 +138,7 @@ const BlogDetailPage = () => {
               {/* Content */}
               <div 
                 className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-a:text-primary hover:prose-a:text-primary/80"
-                dangerouslySetInnerHTML={{ __html: blog.content }}
+                dangerouslySetInnerHTML={{ __html: blog.content || '' }}
               />
 
               {/* Share Section */}
@@ -213,18 +204,18 @@ const BlogDetailPage = () => {
                 </div>
 
                 {/* Related Posts */}
-                {relatedPosts.length > 0 && (
+                {filteredRelatedPosts.length > 0 && (
                   <div className="bg-card rounded-2xl p-6 shadow-sm">
                     <h3 className="font-semibold text-foreground mb-4">Bài viết liên quan</h3>
                     <div className="space-y-4">
-                      {relatedPosts.map((post) => (
+                      {filteredRelatedPosts.map((post) => (
                         <Link
                           key={post.id}
-                          to={`/blog/${post.slug}`}
+                          to={`/blog/${post.slug || post.id}`}
                           className="flex gap-4 group"
                         >
                           <img
-                            src={post.image}
+                            src={post.image || 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800&auto=format&fit=crop'}
                             alt={post.title}
                             className="w-20 h-16 object-cover rounded-lg flex-shrink-0"
                           />
@@ -233,7 +224,7 @@ const BlogDetailPage = () => {
                               {post.title}
                             </h4>
                             <p className="text-xs text-muted-foreground mt-1">
-                              {post.readTime} phút đọc
+                              {getReadTime(post.content)} phút đọc
                             </p>
                           </div>
                         </Link>
@@ -242,20 +233,23 @@ const BlogDetailPage = () => {
                   </div>
                 )}
 
-                {/* Categories */}
-                <div className="bg-card rounded-2xl p-6 shadow-sm">
-                  <h3 className="font-semibold text-foreground mb-4">Danh mục</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {Array.from(new Set(allPosts.map((p) => p.category))).map((category) => (
-                      <span
-                        key={category}
-                        className="px-3 py-1.5 rounded-full bg-accent text-sm text-foreground hover:bg-primary hover:text-primary-foreground cursor-pointer transition-colors"
-                      >
-                        {category}
-                      </span>
-                    ))}
+                {/* Tags */}
+                {blog.tags && blog.tags.length > 0 && (
+                  <div className="bg-card rounded-2xl p-6 shadow-sm">
+                    <h3 className="font-semibold text-foreground mb-4">Tags</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {blog.tags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-accent text-sm text-foreground hover:bg-primary hover:text-primary-foreground cursor-pointer transition-colors"
+                        >
+                          <Tag className="w-3 h-3" />
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </aside>
           </div>
@@ -263,35 +257,37 @@ const BlogDetailPage = () => {
       </section>
 
       {/* More Articles */}
-      {relatedPosts.length > 0 && (
+      {filteredRelatedPosts.length > 0 && (
         <section className="py-12 md:py-16 bg-accent">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
               Có thể bạn quan tâm
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedPosts.map((post) => (
+              {filteredRelatedPosts.map((post) => (
                 <Link
                   key={post.id}
-                  to={`/blog/${post.slug}`}
+                  to={`/blog/${post.slug || post.id}`}
                   className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
                 >
                   <div className="aspect-video overflow-hidden">
                     <img
-                      src={post.image}
+                      src={post.image || 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800&auto=format&fit=crop'}
                       alt={post.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                   <div className="p-6">
-                    <span className="inline-block px-3 py-1 rounded-full bg-accent text-xs font-medium text-primary mb-3">
-                      {post.category}
-                    </span>
+                    {post.category && (
+                      <span className="inline-block px-3 py-1 rounded-full bg-accent text-xs font-medium text-primary mb-3">
+                        {getCategoryName(post.category)}
+                      </span>
+                    )}
                     <h3 className="font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
                       {post.title}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-2">
-                      {formatDate(post.date)} · {post.readTime} phút đọc
+                      {formatDate(post.publish_date || post.created_at)} · {getReadTime(post.content)} phút đọc
                     </p>
                   </div>
                 </Link>

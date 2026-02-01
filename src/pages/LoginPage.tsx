@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 const LoginPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const login = useAuthStore((state) => state.login);
+    const { login, loginWithOAuth } = useAuthStore();
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -46,15 +46,42 @@ const LoginPage = () => {
 
         setIsLoading(true);
         
-        const success = await login(formData.email, formData.password);
-        setIsLoading(false);
+        try {
+            const success = await login(formData.email, formData.password);
+            setIsLoading(false);
 
-        if (success) {
-            toast.success('Đăng nhập thành công!');
-            const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/';
-            navigate(from);
-        } else {
-            toast.error('Email hoặc mật khẩu không chính xác!');
+            if (success) {
+                toast.success('Đăng nhập thành công!');
+                const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/';
+                navigate(from);
+            } else {
+                toast.error('Email hoặc mật khẩu không chính xác!');
+            }
+        } catch (error: any) {
+            setIsLoading(false);
+            if (error.message === 'EMAIL_NOT_CONFIRMED') {
+                toast.error('Email chưa được xác thực!', {
+                    description: 'Bạn cần xác thực email trước khi đăng nhập.',
+                    duration: 3000,
+                });
+                // Chuyển đến trang verify-email
+                setTimeout(() => {
+                    navigate('/verify-email', { 
+                        state: { email: formData.email } 
+                    });
+                }, 1500);
+            } else {
+                toast.error('Email hoặc mật khẩu không chính xác!');
+            }
+        }
+    };
+
+    const handleOAuthLogin = async (provider: 'google' | 'facebook') => {
+        try {
+            await loginWithOAuth(provider);
+            // Supabase sẽ redirect đến OAuth provider
+        } catch (error) {
+            toast.error(`Không thể đăng nhập bằng ${provider === 'google' ? 'Google' : 'Facebook'}`);
         }
     };
 
@@ -197,7 +224,11 @@ const LoginPage = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <button className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-input bg-background hover:bg-accent transition-colors">
+                        <button 
+                            type="button"
+                            onClick={() => handleOAuthLogin('google')}
+                            className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-input bg-background hover:bg-accent transition-colors"
+                        >
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
                                 <path
                                     fill="#4285F4"
@@ -218,7 +249,11 @@ const LoginPage = () => {
                             </svg>
                             <span className="font-medium text-foreground">Google</span>
                         </button>
-                        <button className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-input bg-background hover:bg-accent transition-colors">
+                        <button 
+                            type="button"
+                            onClick={() => handleOAuthLogin('facebook')}
+                            className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-input bg-background hover:bg-accent transition-colors"
+                        >
                             <svg className="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">
                                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                             </svg>

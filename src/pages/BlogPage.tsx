@@ -1,43 +1,33 @@
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, ArrowRight, Search, X, BookOpen } from 'lucide-react';
-import { blogPosts } from '@/data/blogs';
+import { Calendar, Clock, ArrowRight, Search, X, BookOpen, Loader2, Tag } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { getCategoryName } from '@/lib/categoryUtils';
 import { useState, useMemo } from 'react';
-import { usePostStore } from '@/store/postStore';
+import { useBlogPosts } from '@/hooks/useBlogPosts';
 
 const BlogPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const { posts } = usePostStore();
-
-  // Kết hợp bài viết từ blogPosts mẫu và posts từ store
-  const allPosts = useMemo(() => {
-    const userPublishedPosts = posts
-      .filter(p => p.status === 'published')
-      .map(p => ({
-        id: p.id,
-        title: p.title,
-        slug: p.slug,
-        excerpt: p.excerpt,
-        image: p.coverImage || 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800&auto=format&fit=crop',
-        category: p.category,
-        date: p.createdAt,
-        readTime: Math.ceil(p.content.length / 1000),
-      }));
-    return [...userPublishedPosts, ...blogPosts];
-  }, [posts]);
+  const { data: blogPosts = [], isLoading } = useBlogPosts();
 
   // Lọc bài viết theo search query
   const filteredPosts = useMemo(() => {
-    if (!searchQuery.trim()) return allPosts;
+    if (!searchQuery.trim()) return blogPosts;
     
     const query = searchQuery.toLowerCase();
-    return allPosts.filter(
+    return blogPosts.filter(
       (post) =>
         post.title.toLowerCase().includes(query) ||
-        post.excerpt.toLowerCase().includes(query) ||
-        post.category.toLowerCase().includes(query)
+        (post.excerpt && post.excerpt.toLowerCase().includes(query)) ||
+        (post.category && post.category.toLowerCase().includes(query)) ||
+        (post.tags && post.tags.some(tag => tag.toLowerCase().includes(query)))
     );
-  }, [allPosts, searchQuery]);
+  }, [blogPosts, searchQuery]);
+
+  // Tính thời gian đọc từ content
+  const getReadTime = (content: string | null) => {
+    if (!content) return 5;
+    return Math.ceil(content.length / 1000);
+  };
 
   return (
     <div className="min-h-screen bg-background pt-20">
@@ -97,7 +87,11 @@ const BlogPage = () => {
       </div>
 
       <div className="container mx-auto px-4 py-12">
-        {filteredPosts.length === 0 ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : filteredPosts.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-muted-foreground mb-4">
               Không tìm thấy bài viết phù hợp với "{searchQuery}"
@@ -119,7 +113,7 @@ const BlogPage = () => {
               {/* Image */}
               <div className="aspect-video overflow-hidden bg-cream">
                 <img
-                  src={post.image}
+                  src={post.image || 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800&auto=format&fit=crop'}
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
@@ -127,14 +121,24 @@ const BlogPage = () => {
 
               {/* Content */}
               <div className="p-6">
-                {/* Category */}
-                <span className="inline-block px-3 py-1 bg-accent text-accent-foreground text-xs font-medium rounded-full mb-3">
-                  {post.category}
-                </span>
+                {/* Category & Tags */}
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  {post.category && (
+                    <span className="inline-block px-3 py-1 bg-accent text-accent-foreground text-xs font-medium rounded-full">
+                      {getCategoryName(post.category)}
+                    </span>
+                  )}
+                  {post.tags && post.tags.length > 0 && (
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Tag className="w-3 h-3" />
+                      <span>{post.tags.slice(0, 2).join(', ')}</span>
+                    </div>
+                  )}
+                </div>
 
                 {/* Title */}
                 <h2 className="text-xl font-bold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
-                  <Link to={`/blog/${post.slug}`}>{post.title}</Link>
+                  <Link to={`/blog/${post.slug || post.id}`}>{post.title}</Link>
                 </h2>
 
                 {/* Excerpt */}
@@ -147,18 +151,18 @@ const BlogPage = () => {
                   <div className="flex items-center gap-4">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
-                      {formatDate(post.date)}
+                      {formatDate(post.publish_date || post.created_at)}
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
-                      {post.readTime} phút đọc
+                      {getReadTime(post.content)} phút đọc
                     </span>
                   </div>
                 </div>
 
                 {/* Read More */}
                 <Link
-                  to={`/blog/${post.slug}`}
+                  to={`/blog/${post.slug || post.id}`}
                   className="inline-flex items-center gap-1 text-primary font-medium mt-4 group-hover:gap-2 transition-all"
                 >
                   Đọc thêm

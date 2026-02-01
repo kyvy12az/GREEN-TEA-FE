@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { toast } from 'sonner';
@@ -8,7 +8,7 @@ import teaImage from '@/assets/green-tea-leaves.jpg';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
-    const register = useAuthStore((state) => state.register);
+    const { register, loginWithOAuth } = useAuthStore();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +21,26 @@ const RegisterPage = () => {
         agreeTerms: false,
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [lastAttemptTime, setLastAttemptTime] = useState<number>(0);
+
+    useEffect(() => {
+        // Kiểm tra localStorage cho last attempt
+        const lastAttempt = localStorage.getItem('lastRegisterAttempt');
+        const pendingEmail = localStorage.getItem('pendingVerificationEmail');
+        
+        if (lastAttempt) {
+            const timeSinceLastAttempt = Date.now() - parseInt(lastAttempt);
+            const minutesWaited = Math.floor(timeSinceLastAttempt / 60000);
+            
+            if (timeSinceLastAttempt < 5 * 60 * 1000) { // 5 phút
+                const remainingMinutes = 5 - minutesWaited;
+                toast.warning('Vui lòng đợi trước khi đăng ký!', {
+                    description: `Còn ${remainingMinutes} phút nữa để tránh bị giới hạn. ${pendingEmail ? `Email pending: ${pendingEmail}` : ''}`,
+                    duration: 5000,
+                });
+            }
+        }
+    }, []);
 
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
@@ -68,20 +88,98 @@ const RegisterPage = () => {
 
         if (!validateForm()) return;
 
+        // Kiểm tra rate limit
+        const lastAttempt = localStorage.getItem('lastRegisterAttempt');
+        if (lastAttempt) {
+            const timeSinceLastAttempt = Date.now() - parseInt(lastAttempt);
+            const minutesRequired = 5; // 5 phút
+            
+            if (timeSinceLastAttempt < minutesRequired * 60 * 1000) {
+                const remainingSeconds = Math.ceil((minutesRequired * 60 * 1000 - timeSinceLastAttempt) / 1000);
+                const remainingMinutes = Math.floor(remainingSeconds / 60);
+                const remainingSecondsDisplay = remainingSeconds % 60;
+                
+                toast.error('Vui lòng đợi trước khi thử lại!', {
+                    description: `Còn ${remainingMinutes}:${remainingSecondsDisplay.toString().padStart(2, '0')} phút để tránh bị giới hạn.`,
+                    duration: 5000,
+                });
+                return;
+            }
+        }
+
         setIsLoading(true);
 
-        const success = await register({
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            password: formData.password,
-        });
-        setIsLoading(false);
-        if (success) {
-            toast.success('Đăng ký thành công! Chào mừng bạn đến với Trà Xanh Việt!');
-            navigate('/');
-        } else {
-            toast.error('Email này đã được sử dụng. Vui lòng thử email khác!');
+        // Lưu thời điểm attempt
+        localStorage.setItem('lastRegisterAttempt', Date.now().toString());
+
+        try {
+            const success = await register({
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                password: formData.password,
+            });
+            setIsLoading(false);
+            
+            if (success) {
+                toast.success('Đăng ký thành công! Chào mừng bạn đến với Trà Xanh Việt!');
+                navigate('/');
+            } else {
+                toast.error('Email này đã được sử dụng. Vui lòng thử email khác!');
+            }
+        } catch (error: any) {
+            setIsLoading(false);
+            console.error('Register error:', error);
+            
+            if (error.message === 'EMAIL_CONFIRMATION_REQUIRED') {
+                toast.success('Đăng ký thành công!', {
+                    description: 'Đang chuyển đến trang xác thực email...',
+                    duration: 2000,
+                });
+                // Chuyển đến trang verify-email với email
+                setTimeout(() => {
+                    navigate('/verify-email', { 
+                        state: { email: formData.email },
+                        replace: true 
+                    });
+                }, 1000);
+            } else if (error.message && error.message.includes('rate limit')) {
+                toast.error('⏱️ Đã gửi quá nhiều yêu cầu!', {
+                    description: '🔴 Supabase giới hạn 3-4 email/giờ. Vui lòng đợi 5-10 phút hoặc thử email khác.',
+                    duration: 8000,
+                });
+                // Navigate to verify-email nếu đã có pending email
+                const pendingEmail = localStorage.getItem('pendingVerificationEmail');
+                if (pendingEmail) {
+                    setTimeout(() => {
+                        toast.info('💡 Tip: Kiểm tra email đã đăng ký trước đó', {
+                            description: `Có email pending: ${pendingEmail}`,
+                            duration: 5000,
+                        });
+                        navigate('/verify-email', {
+                            state: { email: pendingEmail }
+                        });
+                    }, 3000);
+                }
+            } else if (error.message && error.message.includes('already registered')) {
+                toast.error('Email này đã được đăng ký!', {
+                    description: 'Vui lòng đăng nhập hoặc sử dụng email khác.',
+                    duration: 4000,
+                });
+            } else {
+                toast.error('Không thể đăng ký tài khoản!', {
+                    description: error.message || 'Vui lòng thử lại sau.',
+                });
+            }
+        }
+    };
+
+    const handleOAuthRegister = async (provider: 'google' | 'facebook') => {
+        try {
+            await loginWithOAuth(provider);
+            // Supabase sẽ redirect đến OAuth provider
+        } catch (error) {
+            toast.error(`Không thể đăng ký bằng ${provider === 'google' ? 'Google' : 'Facebook'}`);
         }
     };
 
@@ -294,7 +392,11 @@ const RegisterPage = () => {
 
                     {/* Social Register */}
                     <div className="grid grid-cols-2 gap-4">
-                        <button className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-input bg-background hover:bg-accent transition-colors">
+                        <button 
+                            type="button"
+                            onClick={() => handleOAuthRegister('google')}
+                            className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-input bg-background hover:bg-accent transition-colors"
+                        >
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
                                 <path
                                     fill="#4285F4"
@@ -315,7 +417,11 @@ const RegisterPage = () => {
                             </svg>
                             <span className="font-medium text-foreground">Google</span>
                         </button>
-                        <button className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-input bg-background hover:bg-accent transition-colors">
+                        <button 
+                            type="button"
+                            onClick={() => handleOAuthRegister('facebook')}
+                            className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-input bg-background hover:bg-accent transition-colors"
+                        >
                             <svg className="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">
                                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                             </svg>
