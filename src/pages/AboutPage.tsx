@@ -1,21 +1,27 @@
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { 
-  Leaf, 
-  Heart, 
-  Award, 
-  Users, 
-  Target, 
+import {
+  Leaf,
+  Heart,
+  Award,
+  Users,
+  Target,
   Sparkles,
   MapPin,
   Phone,
   Mail,
   Clock,
   CheckCircle2,
-  ArrowRight
+  ArrowRight,
+  Linkedin,
+  Facebook,
+  Twitter,
+  Globe,
+  QrCode,
+  ExternalLink
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
+import { useState } from 'react';
 import type { Easing } from 'framer-motion';
 
 // Animation variants
@@ -23,8 +29,8 @@ const easeOut: Easing = [0.0, 0.0, 0.2, 1];
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.6, ease: easeOut }
   }
@@ -32,8 +38,8 @@ const fadeInUp = {
 
 const fadeInLeft = {
   hidden: { opacity: 0, x: -50 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
     transition: { duration: 0.6, ease: easeOut }
   }
@@ -41,8 +47,8 @@ const fadeInLeft = {
 
 const fadeInRight = {
   hidden: { opacity: 0, x: 50 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
     transition: { duration: 0.6, ease: easeOut }
   }
@@ -61,8 +67,8 @@ const staggerContainer = {
 
 const scaleIn = {
   hidden: { opacity: 0, scale: 0.8 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     scale: 1,
     transition: { duration: 0.5, ease: easeOut }
   }
@@ -104,33 +110,6 @@ const milestones = [
   { year: '2024', title: 'Vươn Xa', description: 'Xuất khẩu sang 10 quốc gia, khẳng định vị thế trà Việt trên thị trường quốc tế.' }
 ];
 
-const teamMembers = [
-  {
-    name: 'Nguyễn Minh Hoàng',
-    role: 'Nhà Sáng Lập & CEO',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
-    bio: '15 năm kinh nghiệm trong ngành trà, tốt nghiệp Đại học Nông Lâm TP.HCM.'
-  },
-  {
-    name: 'Trần Thu Hà',
-    role: 'Giám Đốc Sản Phẩm',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
-    bio: 'Chuyên gia thẩm trà với chứng chỉ Tea Sommelier quốc tế.'
-  },
-  {
-    name: 'Lê Văn Đức',
-    role: 'Trưởng Phòng R&D',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
-    bio: 'Tiến sĩ Công nghệ Thực phẩm, nghiên cứu về chiết xuất hoạt chất từ trà.'
-  },
-  {
-    name: 'Phạm Thị Mai',
-    role: 'Giám Đốc Trải Nghiệm',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face',
-    bio: '10 năm trong lĩnh vực F&B, chuyên gia về trải nghiệm khách hàng.'
-  }
-];
-
 const stats = [
   { value: '14+', label: 'Năm Kinh Nghiệm' },
   { value: '50K+', label: 'Khách Hàng' },
@@ -139,6 +118,35 @@ const stats = [
 ];
 
 const AboutPage = () => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const personalInfo = {
+    name: "Nguyễn Kỳ Vỹ",
+    role: "Founder & Tea Master",
+    bio: "Hơn một thập kỷ lặn lội qua những vùng trà cổ thụ từ Tây Bắc đến Bảo Lộc, tôi dành trọn tâm huyết để mang hương vị trà nguyên bản nhất tới tay người thưởng thức.",
+    image: "/images/avatars/Avt-Vy.jpg",
+  };
+
+  // Hiệu ứng nghiêng 3D khi rê chuột
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    x.set(e.clientX - rect.left - rect.width / 2 / rect.width);
+    y.set(e.clientY - rect.top - rect.height / 2 / rect.height);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -164,20 +172,20 @@ const AboutPage = () => {
               </span>
             </motion.div>
 
-            <motion.h1 
+            <motion.h1
               variants={fadeInUp}
               className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight"
             >
-              Lan Tỏa Tinh Hoa 
+              Lan Tỏa Tinh Hoa
               <span className="text-tea-600 dark:text-tea-400"> Trà Việt </span>
               Đến Mọi Nhà
             </motion.h1>
 
-            <motion.p 
+            <motion.p
               variants={fadeInUp}
               className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
             >
-              Hơn 14 năm đồng hành cùng người yêu trà, chúng tôi tự hào mang đến những sản phẩm 
+              Hơn 14 năm đồng hành cùng người yêu trà, chúng tôi tự hào mang đến những sản phẩm
               trà chất lượng cao, kết hợp tinh hoa truyền thống và công nghệ hiện đại.
             </motion.p>
 
@@ -243,7 +251,7 @@ const AboutPage = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
               </div>
-              
+
               {/* Floating Card */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -276,25 +284,25 @@ const AboutPage = () => {
               <span className="inline-block px-3 py-1 rounded-full bg-earth-100 dark:bg-earth-900/30 text-earth-700 dark:text-earth-300 text-sm font-medium mb-4">
                 Câu Chuyện Của Chúng Tôi
               </span>
-              
+
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
                 Từ Đam Mê Đến <span className="text-tea-600">Sứ Mệnh</span>
               </h2>
-              
+
               <div className="space-y-4 text-muted-foreground">
                 <p>
-                  Trà Xanh Việt được thành lập vào năm 2010 bởi một nhóm những người đam mê trà, 
-                  với mong muốn mang đến cho người tiêu dùng Việt Nam những sản phẩm trà chất lượng cao, 
+                  Trà Xanh Việt được thành lập vào năm 2010 bởi một nhóm những người đam mê trà,
+                  với mong muốn mang đến cho người tiêu dùng Việt Nam những sản phẩm trà chất lượng cao,
                   an toàn và mang đậm hương vị truyền thống.
                 </p>
                 <p>
-                  Chúng tôi hợp tác trực tiếp với các vùng trà nổi tiếng như Thái Nguyên, Lâm Đồng, 
-                  Hà Giang... để đảm bảo nguồn nguyên liệu tươi ngon nhất. Mỗi lá trà đều được 
+                  Chúng tôi hợp tác trực tiếp với các vùng trà nổi tiếng như Thái Nguyên, Lâm Đồng,
+                  Hà Giang... để đảm bảo nguồn nguyên liệu tươi ngon nhất. Mỗi lá trà đều được
                   chọn lựa kỹ càng, chế biến theo quy trình khép kín, giữ trọn hương vị tự nhiên.
                 </p>
                 <p>
-                  Sau hơn 14 năm phát triển, Trà Xanh Việt tự hào là thương hiệu được hàng chục 
-                  nghìn khách hàng tin tưởng, với mạng lưới phân phối rộng khắp cả nước và xuất 
+                  Sau hơn 14 năm phát triển, Trà Xanh Việt tự hào là thương hiệu được hàng chục
+                  nghìn khách hàng tin tưởng, với mạng lưới phân phối rộng khắp cả nước và xuất
                   khẩu sang 10 quốc gia trên thế giới.
                 </p>
               </div>
@@ -335,7 +343,7 @@ const AboutPage = () => {
               Những Giá Trị Chúng Tôi <span className="text-tea-600">Theo Đuổi</span>
             </h2>
             <p className="text-muted-foreground">
-              Mỗi sản phẩm của Trà Xanh Việt đều được tạo ra dựa trên những giá trị cốt lõi, 
+              Mỗi sản phẩm của Trà Xanh Việt đều được tạo ra dựa trên những giá trị cốt lõi,
               định hướng mọi hoạt động của chúng tôi.
             </p>
           </motion.div>
@@ -398,9 +406,8 @@ const AboutPage = () => {
                 <motion.div
                   key={index}
                   variants={fadeInUp}
-                  className={`relative flex items-center gap-8 mb-12 last:mb-0 ${
-                    index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                  }`}
+                  className={`relative flex items-center gap-8 mb-12 last:mb-0 ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                    }`}
                 >
                   {/* Timeline Dot */}
                   <div className="absolute left-8 md:left-1/2 w-4 h-4 rounded-full bg-tea-600 border-4 border-background -translate-x-1/2 z-10" />
@@ -425,60 +432,88 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-24 bg-[#f8f9f5] dark:bg-zinc-950 overflow-hidden">
         <div className="container mx-auto px-4">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
-            variants={fadeInUp}
-            className="text-center max-w-2xl mx-auto mb-16"
-          >
-            <span className="inline-block px-3 py-1 rounded-full bg-tea-100 dark:bg-tea-900/30 text-tea-700 dark:text-tea-300 text-sm font-medium mb-4">
-              Đội Ngũ Của Chúng Tôi
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Những Người <span className="text-tea-600">Tâm Huyết</span>
-            </h2>
-            <p className="text-muted-foreground">
-              Gặp gỡ những con người đứng sau thành công của Trà Xanh Việt - 
-              những chuyên gia đam mê và tận tâm với nghề.
-            </p>
-          </motion.div>
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
-            variants={staggerContainer}
-            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8"
-          >
-            {teamMembers.map((member, index) => (
-              <motion.div
-                key={index}
-                variants={scaleIn}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="group"
-              >
-                <div className="bg-card rounded-2xl overflow-hidden shadow-sm border border-border hover:shadow-lg transition-all">
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            {/* CARD 1: GIỚI THIỆU BẢN THÂN */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-tea-500 to-emerald-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                <div className="relative bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-tea-100 dark:border-zinc-800">
+                  <div className="flex items-center gap-6 mb-6">
+                    <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-tea-50">
+                      <img src={personalInfo.image} alt={personalInfo.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <h2 className="text-3xl font-bold text-zinc-900 dark:text-white">{personalInfo.name}</h2>
+                      <p className="text-tea-600 font-medium tracking-wide">{personalInfo.role}</p>
+                    </div>
                   </div>
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-foreground mb-1">{member.name}</h3>
-                    <p className="text-tea-600 dark:text-tea-400 text-sm font-medium mb-3">{member.role}</p>
-                    <p className="text-muted-foreground text-sm">{member.bio}</p>
+                  <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-lg italic">
+                    "{personalInfo.bio}"
+                  </p>
+                  <div className="mt-8 flex gap-4">
+                    <button className="px-6 py-2 bg-tea-600 hover:bg-tea-700 text-white rounded-full transition-all flex items-center gap-2">
+                      Liên hệ tôi <ExternalLink size={16} />
+                    </button>
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
+              </div>
+            </motion.div>
+
+            <div className="flex flex-col items-center justify-center p-4">
+              {/* Container chính cho Danh thiếp */}
+              <div
+                className="perspective-1000 w-full max-w-[500px] aspect-[1.75/1] cursor-pointer group"
+                onClick={() => setIsFlipped(!isFlipped)}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+              >
+                <motion.div
+                  style={{
+                    rotateX: isFlipped ? 0 : rotateX, // Chỉ nghiêng khi ở mặt trước
+                    rotateY: isFlipped ? 180 : rotateY,
+                    transformStyle: "preserve-3d"
+                  }}
+                  animate={{ rotateY: isFlipped ? 180 : 0 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                  className="relative w-full h-full duration-500"
+                >
+                  {/* MẶT TRƯỚC: SỬ DỤNG IMG */}
+                  <div className="absolute inset-0 backface-hidden shadow-2xl rounded-2xl overflow-hidden border border-white/20">
+                    <img
+                      src="/path-to-your-front-card.jpg" // Thay bằng link ảnh mặt trước đã thiết kế
+                      alt="Business Card Front"
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Hiệu ứng bóng sáng quét qua khi hover */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+                  </div>
+
+                  {/* MẶT SAU: SỬ DỤNG IMG */}
+                  <div className="absolute inset-0 backface-hidden shadow-2xl rounded-2xl overflow-hidden rotate-y-180 border border-white/10">
+                    <img
+                      src="/danhthiep.png" 
+                      alt="Business Card Back"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </motion.div>
+              </div>
+
+              <p className="mt-6 text-sm font-medium text-tea-700/60 dark:text-tea-400/50 flex items-center gap-2">
+                <span className="w-2 h-2 bg-tea-500 rounded-full animate-ping" />
+                Chạm để lật mặt sau • Rê chuột để xoay 3D
+              </p>
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -499,7 +534,7 @@ const AboutPage = () => {
                 Kết Nối Với <span className="text-tea-600">Chúng Tôi</span>
               </h2>
               <p className="text-muted-foreground mb-8">
-                Bạn có câu hỏi hoặc muốn hợp tác? Đừng ngần ngại liên hệ với chúng tôi. 
+                Bạn có câu hỏi hoặc muốn hợp tác? Đừng ngần ngại liên hệ với chúng tôi.
                 Đội ngũ Trà Xanh Việt luôn sẵn sàng hỗ trợ bạn.
               </p>
 
@@ -601,42 +636,6 @@ const AboutPage = () => {
               </div>
             </motion.div>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-tea-600 to-tea-700 dark:from-tea-700 dark:to-tea-800">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
-            variants={fadeInUp}
-            className="text-center max-w-3xl mx-auto"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Sẵn Sàng Trải Nghiệm Trà Việt Đích Thực?
-            </h2>
-            <p className="text-tea-100 text-lg mb-8">
-              Khám phá bộ sưu tập trà đa dạng của chúng tôi và tìm hương vị phù hợp với bạn.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button asChild size="lg" variant="secondary" className="rounded-full px-8">
-                <Link to="/products">
-                  Mua Sắm Ngay
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="rounded-full px-8 bg-transparent border-white text-white hover:bg-white/10"
-              >
-                <Link to="/#ai-recommendation">Tư Vấn AI</Link>
-              </Button>
-            </div>
-          </motion.div>
         </div>
       </section>
     </div>
