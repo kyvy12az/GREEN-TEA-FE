@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { blogPosts } from '@/data/blogs';
 import { formatDate } from '@/lib/utils';
 import { AIRecommendationButton, AIRecommendationModal } from '@/components/ai/AIRecommendation';
+import { TeaTrendsSection } from '@/components/home/TeaTrendsSection';
 
 const latestBlogs = blogPosts
   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -256,8 +257,8 @@ const HomePage = () => {
               className="flex flex-wrap gap-4"
             >
               <Link to="/products">
-                <motion.div 
-                  whileHover={{ scale: 1.05 }} 
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
@@ -273,18 +274,18 @@ const HomePage = () => {
         </div>
 
         {/* Scroll Indicator */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.5 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
-          <motion.div 
+          <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             className="w-6 h-10 rounded-full border-2 border-primary-foreground/50 flex items-start justify-center pt-2"
           >
-            <motion.div 
+            <motion.div
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
               className="w-1.5 h-3 bg-primary-foreground/50 rounded-full"
@@ -308,17 +309,17 @@ const HomePage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ 
-                  duration: 0.5, 
+                transition={{
+                  duration: 0.5,
                   delay: index * 0.1,
-                  ease: [0.25, 0.1, 0.25, 1] 
+                  ease: [0.25, 0.1, 0.25, 1]
                 }}
                 whileHover={{ y: -5 }}
                 className="flex flex-col items-center md:flex-row gap-4 text-primary-foreground group cursor-pointer"
               >
                 <motion.div
                   className="p-3 rounded-full bg-white/5 group-hover:bg-primary/20 transition-colors duration-300"
-                  whileHover={{ 
+                  whileHover={{
                     rotate: [0, -10, 10, 0],
                     transition: { duration: 0.5 }
                   }}
@@ -338,243 +339,384 @@ const HomePage = () => {
       {/* AI Modal */}
       <AIRecommendationModal />
 
-      {/* Benefits Section */}  
-      <section className="relative py-32 bg-tea-50/50 overflow-hidden">
+      {/* Benefits Section */}
+      <section className="relative py-24 md:py-32 overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-50 via-white to-emerald-50/60" />
+        <div className="absolute inset-0">
+          {/* soft glows */}
+          <motion.div
+            animate={{ scale: [1, 1.15, 1], opacity: [0.25, 0.4, 0.25] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-24 -left-24 w-[520px] h-[520px] rounded-full bg-emerald-200/40 blur-[90px]"
+          />
+          <motion.div
+            animate={{ scale: [1, 1.2, 1], opacity: [0.18, 0.32, 0.18] }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute -bottom-40 -right-40 w-[620px] h-[620px] rounded-full bg-lime-300/20 blur-[110px]"
+          />
+        </div>
 
-        {/* Animated Background Decorations */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.2, 0.4, 0.2],
+        {/* subtle noise overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.035] mix-blend-multiply pointer-events-none"
+          style={{
+            backgroundImage:
+              "url(data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E)",
           }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 left-0 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.15, 0.3, 0.15],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute bottom-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-[100px]"
         />
 
         <div className="container mx-auto px-6 relative z-10">
-
           {/* Header */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 22 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center max-w-4xl mx-auto mb-24"
+            className="text-center max-w-4xl mx-auto mb-14 md:mb-20"
           >
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="block text-primary tracking-[0.35em] uppercase text-xs mb-4 font-medium"
-            >
-              Health · Ritual · Value
-            </motion.span>
+            <div className="flex justify-center mb-6">
+              <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/70 backdrop-blur border border-emerald-100 text-emerald-700 text-xs font-medium tracking-[0.28em] uppercase shadow-sm">
+                Health · Ritual · Value
+              </span>
+            </div>
 
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-decoration font-semibold text-tea-950 mb-6"
-            >
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-decoration font-semibold text-tea-950 leading-tight">
               Tinh Hoa{" "}
-              <span className="italic text-primary">Trà Xanh</span>{" "}
+              <span className="italic text-emerald-700">Trà Xanh</span>{" "}
               Được Tạo Nên
-            </motion.h2>
+            </h2>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-tea-700/70 font-decoration text-lg md:text-xl leading-loose italic"
-            >
-              Trà không chỉ là thức uống,
-              mà là một nghi lễ nuôi dưỡng thân – tâm – trí.
-            </motion.p>
+            <p className="mt-5 text-tea-800/65 font-decoration text-base md:text-xl leading-relaxed italic">
+              Trà không chỉ là thức uống, mà là một nghi lễ nuôi dưỡng thân – tâm – trí.
+            </p>
           </motion.div>
 
-          {/* ===== 2 CỘT: ẢNH + BIỂU ĐỒ ===== */}
-          <div
-            // ref={chartRef}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-32"
-          >
-            {/* CỘT ẢNH */}
-            <motion.div className="relative group" variants={fadeInLeft}>
-              <div>
+          {/* 2 columns */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center mb-16 md:mb-24">
+            {/* Image side */}
+            <motion.div
+              variants={fadeInLeft}
+              className="relative"
+            >
+              <div className="relative rounded-[2.75rem] overflow-hidden border border-emerald-100 bg-white shadow-[0_40px_90px_-55px_rgba(0,0,0,0.35)]">
                 <img
                   src="https://suckhoedoisong.qltns.mediacdn.vn/324455921873985536/2021/12/22/photo-1640156148046-1640156148191631657468.jpg"
                   alt="Tea Ritual"
-                  className="rounded-[3rem] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.25)]"
+                  className="w-full h-[360px] md:h-[440px] object-cover"
                 />
-              </div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                className="absolute -bottom-10 -right-10 bg-white p-6 rounded-3xl shadow-lg"
-              >
-                <p
-                  className="italic font-decoration text-tea-800 md:text-sm text-xs"
+
+                {/* overlay for readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+
+                {/* Quote */}
+                <motion.div
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.35 }}
+                  className="absolute left-5 right-5 bottom-5 md:left-7 md:right-7 md:bottom-7"
                 >
-                  “Mỗi chén trà là một khoảnh khắc
-                  trở về với chính mình.”
-                </p>
-              </motion.div>
-            </motion.div>
-
-            {/* CỘT BIỂU ĐỒ */}
-            <div className="space-y-10">
-              {teaValues.map((item, index) => (
-                <motion.div key={index} variants={fadeInUp}>
-                  <div className="flex justify-between mb-3">
-                    <span
-                      className="text-tea-900 text-lg"
-                    >
-                      {item.label}
-                    </span>
-                    <span className="text-primary font-medium">
-                      {item.value}%
-                    </span>
-                  </div>
-
-                  <div className="w-full h-3 rounded-full bg-emerald-100 overflow-hidden">
-                    <motion.div
-                      variants={barVariants(item.value)}
-                      className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-primary transition-all duration-[1400ms] ease-out"
-                    />
+                  <div className="rounded-3xl bg-white/70 backdrop-blur-xl border border-white/60 px-6 py-5 shadow-xl">
+                    <p className="text-tea-950/80 italic font-decoration text-sm md:text-base leading-relaxed">
+                      “Mỗi chén trà là một khoảnh khắc trở về với chính mình.”
+                    </p>
                   </div>
                 </motion.div>
-              ))}
-            </div>
+              </div>
+
+              {/* small decorative badge */}
+              <div className="absolute -top-4 -right-4 hidden md:block">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-lg rotate-6">
+                  🍵
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Values side */}
+            <motion.div
+              variants={fadeInUp}
+              className="rounded-[2.75rem] border border-emerald-100 bg-white/70 backdrop-blur-xl shadow-[0_30px_90px_-60px_rgba(0,0,0,0.25)] p-7 md:p-10"
+            >
+              <div className="mb-8">
+                <h3 className="text-2xl md:text-3xl font-semibold text-tea-950 font-decoration">
+                  Giá trị của trà xanh
+                </h3>
+                <p className="mt-2 text-tea-800/60 text-sm md:text-base leading-relaxed">
+                  Tập trung vào sức khỏe, sự thư giãn và thói quen thưởng trà mỗi ngày.
+                </p>
+              </div>
+
+              <div className="space-y-7">
+                {teaValues.map((item, index) => (
+                  <motion.div key={index} variants={fadeInUp}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-tea-950 font-medium text-base md:text-lg">
+                        {item.label}
+                      </span>
+                      <span className="text-emerald-700 font-semibold">
+                        {item.value}%
+                      </span>
+                    </div>
+
+                    <div className="relative w-full h-3.5 rounded-full bg-emerald-100 overflow-hidden">
+                      {/* glow */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-200/60 to-lime-200/40 opacity-70" />
+
+                      <motion.div
+                        variants={barVariants(item.value)}
+                        className="relative h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-700"
+                      />
+
+                      {/* little shine */}
+                      <div className="absolute top-0 left-0 h-full w-16 bg-white/25 blur-md rotate-12" />
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* CTA mini */}
+              <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <p className="text-tea-800/60 text-sm italic font-decoration">
+                  Một thói quen nhỏ – lợi ích lớn cho cơ thể.
+                </p>
+
+                <button
+                  className="inline-flex items-center justify-center rounded-2xl px-5 py-3 bg-emerald-700 text-white text-sm font-medium shadow-lg shadow-emerald-700/20 hover:bg-emerald-800 transition"
+                >
+                  Khám phá trà xanh
+                </button>
+              </div>
+            </motion.div>
           </div>
 
           {/* Benefits Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {benefits.map((benefit, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 26 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: index * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -12, scale: 1.02 }}
-                className="relative bg-white p-8 lg:p-10 rounded-[2.5rem]
-                  shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)]
-                  hover:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.15)]
-                  transition-all duration-500 group border border-tea-100/50
-                  cursor-pointer overflow-hidden"
+                transition={{
+                  delay: index * 0.08,
+                  duration: 0.7,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                whileHover={{ y: -8 }}
+                className="group relative rounded-[2.25rem] border border-emerald-100 bg-white/70 backdrop-blur-xl p-7 shadow-[0_25px_70px_-55px_rgba(0,0,0,0.35)] hover:shadow-[0_35px_90px_-60px_rgba(0,0,0,0.5)] transition-all duration-500 overflow-hidden"
               >
-                <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 ${benefit.bg}`} />
-
-                <div className={`relative w-16 h-16 rounded-2xl ${benefit.bg} flex items-center justify-center mb-8 
-                  group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 
-                  shadow-lg ${benefit.shadow}`}>
-                  <benefit.icon className={`w-8 h-8 ${benefit.color} group-hover:scale-110 transition-transform duration-300`} />
+                {/* soft hover overlay */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-lime-400/10" />
                 </div>
 
-                <h3 className="text-xl lg:text-2xl font-semibold text-tea-950 mb-4 
-                  group-hover:text-primary transition-colors duration-300">
-                  {benefit.title}
-                </h3>
+                <div className="relative">
+                  <div
+                    className={`w-14 h-14 rounded-2xl ${benefit.bg} flex items-center justify-center shadow-md ${benefit.shadow} 
+              group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}
+                  >
+                    <benefit.icon
+                      className={`w-7 h-7 ${benefit.color}`}
+                    />
+                  </div>
 
-                <p className="text-tea-800/60 text-sm leading-relaxed italic font-decoration">
-                  {benefit.description}
-                </p>
+                  <h3 className="mt-6 text-lg lg:text-xl font-semibold text-tea-950 group-hover:text-emerald-700 transition-colors">
+                    {benefit.title}
+                  </h3>
+
+                  <p className="mt-3 text-tea-800/60 text-sm leading-relaxed italic font-decoration">
+                    {benefit.description}
+                  </p>
+
+                  {/* tiny divider */}
+                  <div className="mt-6 h-px w-full bg-emerald-100" />
+
+                  <p className="mt-4 text-emerald-700/80 text-xs font-medium tracking-wide">
+                    Learn more →
+                  </p>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
+
+      <TeaTrendsSection />
+
       <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={containerVariants}
-        className="relative py-28 md:py-36 overflow-hidden mb-10 bg-[#0a1f16]"
+        className="relative py-24 md:py-32 overflow-hidden mb-10"
       >
-        {/* BACKGROUND LÁ TRÀ - Có hiệu ứng Zoom nhẹ khi cuộn tới */}
-        <motion.div
-          initial={{ scale: 1.2, opacity: 0 }}
-          whileInView={{ scale: 1.05, opacity: 1 }}
-          transition={{ duration: 1.5 }}
-          className="absolute inset-0 z-0"
-        >
-          <img
-            src="https://file.hstatic.net/1000075078/article/2_40694d37404e49319f9d46392cebdf28.jpg"
-            alt="Tea leaves background"
-            className="w-full h-full object-cover brightness-[0.7] contrast-110"
+        {/* Background */}
+        <div className="absolute inset-0">
+          <motion.div
+            initial={{ scale: 1.15, opacity: 0 }}
+            whileInView={{ scale: 1.05, opacity: 1 }}
+            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0"
+          >
+            <img
+              src="https://file.hstatic.net/1000075078/article/2_40694d37404e49319f9d46392cebdf28.jpg"
+              alt="Tea leaves background"
+              className="w-full h-full object-cover brightness-[1.15] contrast-100 saturate-110"
+
+            />
+          </motion.div>
+
+          {/* overlay: giúp ảnh rõ nhưng text vẫn nổi */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#07140f]/75 via-[#0b241a]/55 to-[#0b241a]/20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/25" />
+
+          {/* glow accents */}
+          <div className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full bg-emerald-500/20 blur-[110px]" />
+          <div className="absolute -bottom-40 -right-40 w-[640px] h-[640px] rounded-full bg-lime-300/10 blur-[120px]" />
+
+          {/* noise */}
+          <div
+            className="absolute inset-0 opacity-[0.05] mix-blend-overlay pointer-events-none"
+            style={{
+              backgroundImage:
+                "url(data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E)",
+            }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#163a2a]/95 via-[#1f5a40]/70 to-transparent" />
-        </motion.div>
+        </div>
 
         <div className="container mx-auto px-6 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-20 lg:gap-28">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {/* LEFT */}
+            <motion.div variants={fadeInUp} className="text-white">
+              {/* Badge */}
+              <motion.div variants={fadeInUp} className="mb-6">
+                <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/15 bg-white/10 backdrop-blur-xl text-white/85 text-xs font-medium tracking-[0.28em] uppercase shadow-lg">
+                  Vietnamese Tea · Craft · Ritual
+                </span>
+              </motion.div>
 
-            {/* CỘT TRÁI – NỘI DUNG */}
-            <motion.div
-              variants={fadeInUp}
-              className="w-full lg:w-1/2 text-white"
-            >
-              <motion.h2 variants={fadeInUp} className="leading-snug mb-8 tracking-wide font-decoration">
-                <span className="block text-3xl md:text-5xl font-light font-semibold text-white">
+              {/* Title */}
+              <motion.h2
+                variants={fadeInUp}
+                className="leading-tight font-decoration"
+              >
+                <span className="block text-4xl md:text-5xl lg:text-6xl font-semibold">
                   Khám Phá Hương Vị
                 </span>
-                <span className="block text-3xl md:text-5xl font-semibold italic text-tea-300 mt-3 drop-shadow-lg">
+                <span className="block text-4xl md:text-5xl lg:text-6xl font-semibold italic text-tea-300 mt-3 drop-shadow-[0_12px_35px_rgba(0,0,0,0.45)]">
                   Trà Việt Nam
                 </span>
               </motion.h2>
 
-              <motion.p variants={fadeInUp} className="max-w-xl text-white/80 text-base md:text-lg leading-loose">
+              {/* Description */}
+              <motion.p
+                variants={fadeInUp}
+                className="mt-7 max-w-xl text-white/75 text-base md:text-lg leading-relaxed"
+              >
                 Chúng tôi chọn lọc những búp trà tinh khiết từ các vùng núi cao,
-                nơi thiên nhiên, con người và thời gian cùng nhau tạo nên
-                hương vị trà thuần khiết của Việt Nam.
+                nơi thiên nhiên, con người và thời gian cùng nhau tạo nên hương vị trà
+                thuần khiết của Việt Nam.
               </motion.p>
+
+              {/* Mini stats */}
+              <motion.div
+                variants={fadeInUp}
+                className="mt-10 grid grid-cols-3 gap-4 max-w-xl"
+              >
+                {[
+                  { value: "100%", label: "Búp trà non" },
+                  { value: "3+", label: "Vùng trà nổi tiếng" },
+                  { value: "24h", label: "Giữ hương tươi" },
+                ].map((s, i) => (
+                  <div
+                    key={i}
+                    className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl px-4 py-4"
+                  >
+                    <p className="text-xl md:text-2xl font-semibold text-white">
+                      {s.value}
+                    </p>
+                    <p className="text-xs md:text-sm text-white/60 mt-1">
+                      {s.label}
+                    </p>
+                  </div>
+                ))}
+              </motion.div>
+
+              {/* CTA */}
+              <motion.div variants={fadeInUp} className="mt-10 flex gap-4 flex-wrap">
+                <button className="rounded-2xl px-6 py-3 bg-primary text-white font-semibold shadow-xl shadow-emerald-500/20 hover:bg-primary/100 transition">
+                  Xem bộ sưu tập trà
+                </button>
+                <button className="rounded-2xl px-6 py-3 border border-white/20 bg-white/5 backdrop-blur-xl text-white/85 hover:bg-white/10 transition">
+                  Tìm hiểu trà đạo
+                </button>
+              </motion.div>
             </motion.div>
 
-            {/* CỘT PHẢI – ẢNH TRÀ ĐẠO (Hiệu ứng thác đổ cho Grid) */}
-            <div className="w-full lg:w-1/2">
-              <div className="grid grid-cols-2 gap-6 md:gap-8">
+            {/* RIGHT - Masonry Premium */}
+            <motion.div variants={fadeInUp} className="w-full">
+              <div className="grid grid-cols-2 gap-5 md:gap-7">
                 {[
-                  "https://vienhuyethoc.vn/wp-content/uploads/2023/01/tra-xanh-117.jpg",
-                  "https://chantamtra.vn/public/upload/kham-pha-tra-ngon-nhat-viet-nam-chan-tam-tra%20(4).jpg",
-                  "https://bantradienthongminh.vn/wp-content/uploads/chen-tra-bat-trang.jpg",
-                  "https://image-us.24h.com.vn/upload/4-2019/images/2019-12-26/1577343027-764-5-cong-thuc-duong-da-lam-dep-it-biet-cua-tra-xanh-giup-nang-tiet-kiem-hau-bao-2-1576492426-width650height433.jpg",
-                ].map((src, i) => (
+                  {
+                    src: "https://vienhuyethoc.vn/wp-content/uploads/2023/01/tra-xanh-117.jpg",
+                    label: "Trà xanh núi cao",
+                  },
+                  {
+                    src: "https://chantamtra.vn/public/upload/kham-pha-tra-ngon-nhat-viet-nam-chan-tam-tra%20(4).jpg",
+                    label: "Hương trà nguyên bản",
+                  },
+                  {
+                    src: "https://bantradienthongminh.vn/wp-content/uploads/chen-tra-bat-trang.jpg",
+                    label: "Nghi lễ thưởng trà",
+                  },
+                  {
+                    src: "https://image-us.24h.com.vn/upload/4-2019/images/2019-12-26/1577343027-764-5-cong-thuc-duong-da-lam-dep-it-biet-cua-tra-xanh-giup-nang-tiet-kiem-hau-bao-2-1576492426-width650height433.jpg",
+                    label: "Tinh chất từ trà",
+                  },
+                ].map((item, i) => (
                   <motion.div
                     key={i}
                     variants={imageVariant}
-                    whileHover={{
-                      scale: 1.05,
-                      rotate: i % 2 === 0 ? -1 : 1,
-                      transition: { duration: 0.3 }
-                    }}
-                    className={`aspect-[4/5] overflow-hidden rounded-[2rem] shadow-2xl border border-white/10 
-                             ${i % 2 !== 0 ? 'mt-8' : ''} /* Tạo layout lệch so le đẹp mắt */`}
+                    whileHover={{ y: -8 }}
+                    transition={{ duration: 0.35 }}
+                    className={`group relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_35px_90px_-65px_rgba(0,0,0,0.75)]
+                ${i % 2 !== 0 ? "mt-10" : ""}`}
                   >
-                    <img
-                      src={src}
-                      alt="Vietnam tea ceremony"
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                    />
+                    <div className="aspect-[4/5]">
+                      <img
+                        src={item.src}
+                        alt={item.label}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    </div>
+
+                    {/* overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent opacity-90" />
+
+                    {/* shine */}
+                    <div className="absolute -left-24 top-0 w-24 h-full bg-white/10 blur-xl rotate-12 translate-x-0 group-hover:translate-x-[520px] transition-transform duration-1000" />
+
+                    {/* caption */}
+                    <div className="absolute left-5 right-5 bottom-5">
+                      <div className="rounded-2xl border border-white/10 bg-black/35 backdrop-blur-xl px-4 py-3">
+                        <p className="text-white text-sm font-medium">
+                          {item.label}
+                        </p>
+                        <p className="text-white/60 text-xs mt-0.5">
+                          Khám phá chi tiết →
+                        </p>
+                      </div>
+                    </div>
                   </motion.div>
                 ))}
               </div>
-            </div>
-
+            </motion.div>
           </div>
         </div>
       </motion.section>
+
 
       {/* Featured Products Section */}
       <motion.section

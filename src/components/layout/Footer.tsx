@@ -1,231 +1,233 @@
 import { Link } from 'react-router-dom';
+import { MapPin, Phone, Mail, Facebook, Instagram, Youtube } from 'lucide-react';
+import teaBackground from '@/assets/hero-tea-plantation.jpg';
 import { motion } from 'framer-motion';
-import {
-  Leaf,
-  MapPin,
-  Phone,
-  Mail,
-  Facebook,
-  Instagram,
-  Youtube,
-  ArrowUpRight
-} from 'lucide-react';
 
-const footerLinkClass =
-  "relative inline-block text-tea-200/70 text-sm transition-all duration-300 " +
-  "hover:text-emerald-400 hover:translate-x-1 flex items-center gap-1 group";
+const footerLinks = {
+  products: [
+    { name: 'Trà Nguyên Lá', path: '/products?category=nguyen-la' },
+    { name: 'Matcha', path: '/products?category=matcha' },
+    { name: 'Trà Túi Lọc', path: '/products?category=tui-loc' },
+    { name: 'Trà Nhật Bản', path: '/products?category=tra-nhat' },
+  ],
+  support: [
+    { name: 'Hướng dẫn mua hàng', path: '/guide' },
+    { name: 'Chính sách đổi trả', path: '/return-policy' },
+    { name: 'Chính sách vận chuyển', path: '/shipping-policy' },
+    { name: 'Câu hỏi thường gặp', path: '/faq' },
+  ],
+  company: [
+    { name: 'Về chúng tôi', path: '/about' },
+    { name: 'Blog & Kiến thức', path: '/blog' },
+    { name: 'Liên hệ', path: '/contact' },
+    { name: 'Tuyển dụng', path: '/careers' },
+  ],
+};
 
 export const Footer = () => {
   return (
-    <footer className="relative text-tea-100 overflow-hidden bg-[#051510]">
+    <footer className="relative text-white overflow-hidden">
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${teaBackground})`,
+        }}
+      />
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-tea-900/90 via-tea-900/95 to-tea-950/98" />
 
-      <div className="absolute inset-0 z-0">
+      {/* Decorative Elements */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
 
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a2318] via-[#051510] to-[#0d1f17]">
-          <img
-            src="https://cdn3.ivivu.com/2023/02/%C4%90%E1%BB%93i-ch%C3%A8-M%E1%BB%99c-Ch%C3%A2u-ivivu-1.jpg"
-            alt="Đồi chè background"
-            className="
-              w-full h-full 
-              object-cover object-[center_35%]
-              opacity-40
-              scale-105
-              brightness-[0.85]
-              contrast-[1.1]
-              saturate-[0.9]
-            "
-            loading="lazy"
-          />
-        </div>
+      {/* Main Footer */}
+      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-14">
+          {/* Brand */}
+          <div className="lg:col-span-1 space-y-8">
+            <Link to="/" className="inline-block group">
+              <div className="flex items-center gap-4">
+                <motion.div
+                  whileHover={{ scale: 1.08, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative w-14 h-14"
+                >
+                  <div className="absolute inset-0 rounded-full blur-xl bg-emerald-500/30 group-hover:bg-emerald-400/50 transition-all duration-500" />
+                  <div className="relative w-full h-full rounded-full flex items-center justify-center border border-emerald-200/20 bg-emerald-50/5 backdrop-blur-lg shadow-inner overflow-hidden transition-all duration-300 group-hover:border-emerald-300/50 group-hover:shadow-emerald-500/20">
+                    <img
+                      src="/logo2.png"
+                      alt="VietNihon Tea"
+                      className="w-10 h-10 object-contain drop-shadow-md transition-all duration-300 group-hover:scale-110"
+                    />
+                  </div>
+                </motion.div>
 
-        <div className="
-          absolute inset-0
-          bg-gradient-to-b
-          from-[#051510]/75
-          via-[#051510]/50
-          to-[#051510]/85
-        " />
-
-        <div className="
-          absolute inset-0
-          bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(5,21,16,0.4)_70%,rgba(5,21,16,0.8)_100%)]
-        " />
-
-      </div>
-
-      <div className="container mx-auto px-4 relative z-10 pt-20 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
-
-          <div className="space-y-6">
-            <div className="flex flex-col items-start gap-6 max-w-fit">
-              <Link
-                to="/"
-                className="flex flex-col items-start gap-4 group"
-              >
-                <div className="flex items-center gap-4">
-                  <motion.div
-                    whileHover={{ scale: 1.08, rotate: 3 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="relative md:w-14 md:h-14 w-12 h-12 group"
-                  >
-                    <div className="absolute inset-0 rounded-full blur-xl bg-emerald-500/25 group-hover:bg-emerald-400/45 transition-all duration-500" />
-
-                    <div className="relative w-full h-full rounded-full flex items-center justify-center border border-emerald-200/20 bg-emerald-50/5 backdrop-blur-lg shadow-inner overflow-hidden transition-all duration-400 group-hover:border-emerald-300/40 group-hover:shadow-emerald-500/15">
-                      <img
-                        src="/logo2.png"
-                        alt="VietNihon Tea"
-                        className="w-10 h-10 object-contain drop-shadow-md transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-lg"
-                      />
-                    </div>
-                  </motion.div>
-
-                  <div className="flex flex-col -space-y-0.5">
-                    <div className="flex items-baseline gap-2">
-                      <span
-                        className="text-2xl font-decoration font-semibold tracking-tight text-white transition-colors duration-300 group-hover:text-emerald-300"
-                      >
-                        Viet<span
-                          className="text-2xl font-decoration font-semibold tracking-wide text-emerald-400 italic transition-colors duration-300 group-hover:text-emerald-300"
-                        >
-                          Nihon
-                        </span>
-                      </span>
-                      <span className="text-2xl font-decoration font-medium text-emerald-200/90 tracking-wider">
-                        Tea
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2.5 mt-1">
-                      <div className="h-px w-4 bg-emerald-400/50 group-hover:bg-emerald-300 transition-colors duration-400" />
-                      <span className="text-[10px] font-medium tracking-[0.3em] uppercase text-emerald-300/70 group-hover:text-emerald-200 transition-colors duration-300">
-                        Pure Harmony
-                      </span>
-                    </div>
+                <div className="flex flex-col -space-y-0.5">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-2xl font-decoration font-semibold tracking-tight text-white transition-colors duration-300 group-hover:text-emerald-300">
+                      Viet<span className="text-emerald-400 italic group-hover:text-emerald-300">Nihon</span>
+                    </span>
+                    <span className="text-2xl font-decoration font-medium text-emerald-200/90 tracking-wider">
+                      Tea
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2.5 mt-1">
+                    <div className="h-px w-4 bg-emerald-400/50 group-hover:bg-emerald-300 transition-colors duration-300" />
+                    <span className="text-[10px] font-medium tracking-[0.3em] uppercase text-emerald-300/70 group-hover:text-emerald-200 transition-colors duration-300">
+                      Pure Harmony
+                    </span>
                   </div>
                 </div>
-              </Link>
+              </div>
+            </Link>
 
-              <p className="text-emerald-200/70 text-sm leading-relaxed italic max-w-xs md:max-w-sm font-light">
-                "Hòa quyện tinh hoa trà Việt với sự thanh tịnh của Nhật Bản – mỗi tách trà là một hành trình về nguồn."
-              </p>
-            </div>
+            <p className="text-emerald-200/70 text-sm leading-relaxed italic max-w-xs font-light">
+              "Hòa quyện tinh hoa trà Việt với sự thanh tịnh của Nhật Bản – mỗi tách trà là một hành trình về nguồn."
+            </p>
 
-            <div className="flex gap-4">
-              {[Facebook, Instagram, Youtube].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-500/50 hover:bg-emerald-500 flex items-center justify-center transition-all duration-300 group"
+            <div className="flex gap-3">
+              {[
+                { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
+                { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
+                { icon: Youtube, href: 'https://youtube.com', label: 'Youtube' },
+              ].map(({ icon: Icon, href, label }) => (
+                <motion.a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-11 h-11 rounded-xl bg-white/10 hover:bg-emerald-500 flex items-center justify-center transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-emerald-400/50 hover:shadow-lg hover:shadow-emerald-500/20"
+                  aria-label={label}
                 >
-                  <Icon className="w-5 h-5 group-hover:text-[#051510] transition-colors" />
-                </a>
+                  <Icon className="w-5 h-5" />
+                </motion.a>
               ))}
             </div>
           </div>
 
-          {/* Cột 2: Danh mục sản phẩm */}
-          <div>
-            <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-8">Sản phẩm</h3>
-            <ul className="space-y-4">
-              <li>
-                <Link to="/products?category=nguyen-la" className={footerLinkClass}>
-                  Trà Nguyên Lá <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100" />
-                </Link>
-              </li>
-              <li>
-                <Link to="/products?category=matcha" className={footerLinkClass}>
-                  Matcha Cao Cấp <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100" />
-                </Link>
-              </li>
-              <li>
-                <Link to="/products?category=tui-loc" className={footerLinkClass}>
-                  Trà Túi Lọc Tiện Lợi <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100" />
-                </Link>
-              </li>
-              <li>
-                <Link to="/products?category=tra-nhat" className={footerLinkClass}>
-                  Tinh Hoa Trà Nhật <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100" />
-                </Link>
-              </li>
+          {/* Products */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <div className="w-1.5 h-6 bg-gradient-to-b from-emerald-400 to-emerald-600 rounded-full" />
+              Sản phẩm
+            </h3>
+            <ul className="space-y-3.5">
+              {footerLinks.products.map((link) => (
+                <li key={link.path}>
+                  <Link
+                    to={link.path}
+                    className="group flex items-center gap-2.5 text-emerald-200/75 hover:text-emerald-300 transition-all duration-300 text-sm"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/40 group-hover:bg-emerald-400 group-hover:scale-125 transition-all duration-300" />
+                    <span className="group-hover:translate-x-1 transition-transform duration-300">
+                      {link.name}
+                    </span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Cột 3: Hỗ trợ khách hàng */}
-          <div>
-            <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-8">Hỗ trợ</h3>
-            <ul className="space-y-4">
-              <li><Link to="/guide" className={footerLinkClass}>Hướng dẫn mua hàng</Link></li>
-              <li><Link to="/return-policy" className={footerLinkClass}>Chính sách đổi trả</Link></li>
-              <li><Link to="/shipping-policy" className={footerLinkClass}>Chính sách vận chuyển</Link></li>
-              <li><Link to="/faq" className={footerLinkClass}>Câu hỏi thường gặp</Link></li>
+          {/* Support */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <div className="w-1.5 h-6 bg-gradient-to-b from-emerald-400 to-emerald-600 rounded-full" />
+              Hỗ trợ
+            </h3>
+            <ul className="space-y-3.5">
+              {footerLinks.support.map((link) => (
+                <li key={link.path}>
+                  <Link
+                    to={link.path}
+                    className="group flex items-center gap-2.5 text-emerald-200/75 hover:text-emerald-300 transition-all duration-300 text-sm"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/40 group-hover:bg-emerald-400 group-hover:scale-125 transition-all duration-300" />
+                    <span className="group-hover:translate-x-1 transition-transform duration-300">
+                      {link.name}
+                    </span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Cột 4: Thông tin liên hệ */}
-          <div>
-            <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-8">Liên hệ</h3>
-            <div className="space-y-5">
-              <div className="flex items-start gap-4 group">
-                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 group-hover:bg-emerald-500 transition-colors">
-                  <MapPin className="w-4 h-4 text-emerald-400 group-hover:text-[#051510]" />
-                </div>
-                <p className="text-sm text-tea-200/70 leading-snug">
-                  123 Đường Trà Xanh, Phường Bến Nghé, Quận 1, TP.HCM
-                </p>
-              </div>
-
-              <a href="tel:19001234" className="flex items-center gap-4 group">
-                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 group-hover:bg-emerald-500 transition-colors">
-                  <Phone className="w-4 h-4 text-emerald-400 group-hover:text-[#051510]" />
-                </div>
-                <span className="text-sm text-tea-200/70 font-bold tracking-wider">1900 1234</span>
-              </a>
-
-              <a href="mailto:hello@traxanhviet.vn" className="flex items-center gap-4 group">
-                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 group-hover:bg-emerald-500 transition-colors">
-                  <Mail className="w-4 h-4 text-emerald-400 group-hover:text-[#051510]" />
-                </div>
-                <span className="text-sm text-tea-200/70">hello@traxanhviet.vn</span>
-              </a>
-            </div>
+          {/* Contact */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <div className="w-1.5 h-6 bg-gradient-to-b from-emerald-400 to-emerald-600 rounded-full" />
+              Liên hệ
+            </h3>
+            <ul className="space-y-4">
+              {[
+                {
+                  icon: MapPin,
+                  content: '123 Đường Trà Xanh, Quận 1, TP. Hồ Chí Minh',
+                  href: null,
+                },
+                {
+                  icon: Phone,
+                  content: '1900 1234',
+                  href: 'tel:19001234',
+                },
+                {
+                  icon: Mail,
+                  content: 'hello@traxanhviet.vn',
+                  href: 'mailto:hello@traxanhviet.vn',
+                },
+              ].map(({ icon: Icon, content, href }, index) => (
+                <li key={index} className="flex items-start gap-3 group">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center flex-shrink-0 backdrop-blur-sm border border-emerald-400/20 group-hover:bg-emerald-500/25 group-hover:border-emerald-400/40 transition-all duration-300">
+                    <Icon className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform duration-300" />
+                  </div>
+                  {href ? (
+                    <a
+                      href={href}
+                      className="text-emerald-200/75 hover:text-emerald-300 transition-colors duration-300 text-sm leading-relaxed pt-2"
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <span className="text-emerald-200/75 text-sm leading-relaxed pt-2">
+                      {content}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
-
         </div>
       </div>
 
-      <div className="relative z-10 border-t border-emerald-900/20 bg-gradient-to-t from-black/60 to-transparent backdrop-blur-lg">
-        <div className="container mx-auto px-6 py-8 md:py-10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-xs md:text-sm tracking-wide text-emerald-200/60 font-light">
+      {/* Footer Bottom */}
+      <div className="relative z-10 border-t border-emerald-800/10 bg-gradient-to-t from-black/70 to-transparent backdrop-blur-xl">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-emerald-200/60">
             <p className="flex items-center gap-2">
-              © {new Date().getFullYear()} VietNihon Tea
-              <span className="text-emerald-400/70">·</span>
-              <span className="italic">Pure Harmony of Vietnam & Japan</span>
+              <span>© {new Date().getFullYear()} VietNihon Tea</span>
+              <span className="text-emerald-400/50">·</span>
+              <span className="italic font-light">Pure Harmony of Vietnam & Japan</span>
             </p>
 
-            <div className="flex items-center gap-8 md:gap-10">
-              <Link
-                to="/privacy"
-                className="hover:text-emerald-300 transition-colors duration-300 hover:underline underline-offset-4"
-              >
-                Chính sách bảo mật
-              </Link>
-              <Link
-                to="/terms"
-                className="hover:text-emerald-300 transition-colors duration-300 hover:underline underline-offset-4"
-              >
-                Điều khoản dịch vụ
-              </Link>
-              <Link
-                to="/contact"
-                className="hover:text-emerald-300 transition-colors duration-300 hover:underline underline-offset-4"
-              >
-                Liên hệ
-              </Link>
+            <div className="flex items-center gap-8">
+              {[
+                { name: 'Chính sách bảo mật', path: '/privacy' },
+                { name: 'Điều khoản dịch vụ', path: '/terms' },
+                { name: 'Liên hệ', path: '/contact' },
+              ].map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="hover:text-emerald-300 transition-all duration-300 hover:underline underline-offset-4 decoration-emerald-400/50"
+                >
+                  {link.name}
+                </Link>
+              ))}
             </div>
           </div>
         </div>
       </div>
-
     </footer>
   );
 };
