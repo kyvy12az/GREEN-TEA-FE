@@ -27,7 +27,7 @@ import AboutPage from './pages/AboutPage';
 import { useAuthStore } from './store/authStore';
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
-import TeaAssistantPage from './pages/TeaAssistantPage';
+import { TeaAssistantBot } from './components/ai/TeaAssistantBot';
 // import { Toaster as HotToaster } from "react-hot-toast";
 
 const queryClient = new QueryClient({
@@ -71,7 +71,7 @@ const App = () => {
           <Route path="/diseases" element={<Layout><Diseases /></Layout>} />
           <Route path='/identify' element={<Layout><Identify /></Layout>} />
           <Route path='/about' element={<Layout><AboutPage /></Layout>} />
-          <Route path="/tea-assistant" element={<TeaAssistantPage></TeaAssistantPage>} />
+
 
           {/* Protected pages */}
           <Route path="/profile" element={<ProtectedRoute><Layout><ProfilePage /></Layout></ProtectedRoute>} />
@@ -83,6 +83,7 @@ const App = () => {
 
           <Route path="*" element={<Layout><NotFound /></Layout>} />
         </Routes>
+        <TeaAssistantBot />
       </BrowserRouter>
     </QueryClientProvider>
   );

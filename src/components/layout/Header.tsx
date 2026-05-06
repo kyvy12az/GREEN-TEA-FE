@@ -17,7 +17,6 @@ const navLinks = [
   { name: "Sản phẩm", path: "/products", icon: <ShoppingBag className="w-5 h-5" /> },
   { name: "Blog", path: "/blog", icon: <Leaf className="w-5 h-5" /> },
   { name: "AI nhận diện", path: "/identify", icon: <Wind className="w-5 h-5" /> },
-  { name: "AI Trợ lý pha trà", path: "/tea-assistant", icon: <Bot className="w-5 h-5" /> },
   { name: "Thư viện bệnh", path: "/diseases", icon: <Library className="w-5 h-5" /> },
   { name: "Về chúng tôi", path: "/about", icon: <Users className="w-5 h-5" /> },
 ];
