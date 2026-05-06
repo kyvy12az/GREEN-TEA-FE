@@ -23,7 +23,7 @@ export const teaDiseases: TeaDisease[] = [
     scientificName: "Exobasidium vexans",
     causativeAgent: "Nấm Exobasidium vexans Massee",
     severity: "severe",
-    imageUrl: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop",
+    imageUrl: "https://jksus.org/content/185/2020/32/8/img/10.1016_j.jksus.2020.09.008-fig4.png",
     shortDescription: "Bệnh nghiêm trọng nhất trên cây trà, gây thiệt hại năng suất lớn",
     symptoms: [
       "Xuất hiện các đốm tròn nhỏ, trong suốt trên lá non",
@@ -63,7 +63,7 @@ export const teaDiseases: TeaDisease[] = [
     scientificName: "Colletotrichum camelliae",
     causativeAgent: "Nấm Colletotrichum spp.",
     severity: "moderate",
-    imageUrl: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop",
+    imageUrl: "https://static.vikaspedia.in/media/images_en/agriculture/crop-production/integrated-pest-managment/ipm-for-commercial-crops/ipm-strategies-for-tea/brown-blight-grey-blighttest.png",
     shortDescription: "Bệnh phổ biến gây đốm nâu và làm khô lá trà",
     symptoms: [
       "Đốm nâu tròn hoặc bất định trên lá",
@@ -100,7 +100,7 @@ export const teaDiseases: TeaDisease[] = [
     scientificName: "Pestalotiopsis theae",
     causativeAgent: "Nấm Pestalotiopsis spp.",
     severity: "moderate",
-    imageUrl: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=400&h=300&fit=crop",
+    imageUrl: "https://onlinelibrary.wiley.com/cms/asset/649191cf-fade-4aea-9f09-dbdaaa1a37b8/cone7876302-fig-0002-m.jpg",
     shortDescription: "Bệnh gây đốm xám và làm lá rụng sớm",
     symptoms: [
       "Đốm xám bạc với viền nâu trên lá",
@@ -137,7 +137,7 @@ export const teaDiseases: TeaDisease[] = [
     scientificName: "Cephaleuros virescens",
     causativeAgent: "Tảo Cephaleuros virescens",
     severity: "mild",
-    imageUrl: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop",
+    imageUrl: "https://www.gardenia.net/wp-content/uploads/2023/09/Algal-Leaf-Spot-Scot-Nelson2-1.jpg",
     shortDescription: "Bệnh do tảo gây đốm xanh cam trên lá",
     symptoms: [
       "Đốm tròn xanh xám hoặc cam trên mặt lá",
@@ -174,7 +174,7 @@ export const teaDiseases: TeaDisease[] = [
     scientificName: "Cephaleuros parasiticus",
     causativeAgent: "Tảo Cephaleuros parasiticus",
     severity: "moderate",
-    imageUrl: "https://images.unsplash.com/photo-1482938289607-e9573fc25ebb?w=400&h=300&fit=crop",
+    imageUrl: "https://agriculturistmusa.com/wp-content/uploads/2020/03/Symptoms-and-Management-of-Red-Rust-of-tea.png",
     shortDescription: "Bệnh do tảo gây lớp phủ màu gỉ sắt trên cành",
     symptoms: [
       "Lớp phủ màu gỉ sắt (cam-nâu) trên cành và thân",
@@ -211,7 +211,7 @@ export const teaDiseases: TeaDisease[] = [
     scientificName: "Gloeosporium theae-sinensis",
     causativeAgent: "Nấm Gloeosporium theae-sinensis",
     severity: "severe",
-    imageUrl: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=400&h=300&fit=crop",
+    imageUrl: "https://map-data.maxapress.com//map-data//bpr/2025/1/PIC/bpr-0025-0005-1.jpg",
     shortDescription: "Bệnh nấm nghiêm trọng gây chết lá và cành",
     symptoms: [
       "Đốm nâu đen có viền rõ trên lá",
