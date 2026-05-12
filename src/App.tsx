@@ -24,10 +24,13 @@ import Identify from './pages/Identify';
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import OrderDetailPage from './pages/OrderDetailPage';
 import AboutPage from './pages/AboutPage';
+import MomoReturnPage from './pages/payment/MomoReturnPage';
+import ZalopayReturnPage from './pages/payment/ZalopayReturnPage';
 import { useAuthStore } from './store/authStore';
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TeaAssistantBot } from './components/ai/TeaAssistantBot';
+import { ChatWidget } from './components/chat/ChatWidget';
 // import { Toaster as HotToaster } from "react-hot-toast";
 
 const queryClient = new QueryClient({
@@ -65,6 +68,8 @@ const App = () => {
           <Route path="/product/:slug" element={<Layout><ProductDetailPage /></Layout>} />
           <Route path="/cart" element={<Layout><CartPage /></Layout>} />
           <Route path="/checkout" element={<Layout><CheckoutPage /></Layout>} />
+          <Route path="/payment/momo-return" element={<Layout><MomoReturnPage /></Layout>} />
+          <Route path="/payment/zalopay-return" element={<Layout><ZalopayReturnPage /></Layout>} />
           <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
           <Route path="/blog/:slug" element={<Layout><BlogDetailPage /></Layout>} />
           <Route path="/process" element={<Layout><ProcessPage /></Layout>} />
@@ -84,6 +89,7 @@ const App = () => {
           <Route path="*" element={<Layout><NotFound /></Layout>} />
         </Routes>
         <TeaAssistantBot />
+        <ChatWidget />
       </BrowserRouter>
     </QueryClientProvider>
   );
